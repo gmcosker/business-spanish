@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+dist/
+build/
+
+# Misc
+.DS_Store
+*.pem
+.env
+.env.local
+.env.*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Debug files
+*.md
+!README.md
+cleanup_debug.md
+CHECK_NETWORK_TAB.md
+OAUTH_CONSENT_DIRECT_LINK.md
+FIX_API_KEY_ERROR.md
