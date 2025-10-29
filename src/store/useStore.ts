@@ -176,6 +176,17 @@ export const useStore = create<AppState>()(
             lastActiveDate: new Date().toISOString(),
           };
           
+          // Check if all lessons in the module are now completed
+          const completedLessonsInModule = module.lessons.filter(l =>
+            updatedProgress.completedLessons.includes(l.id)
+          ).length;
+          const allLessonsCompleted = completedLessonsInModule === module.lessons.length;
+          
+          // Auto-complete the module if all lessons are done
+          if (allLessonsCompleted && !progress.completedModules.includes(module.id)) {
+            updatedProgress.completedModules = [...updatedProgress.completedModules, module.id];
+          }
+          
           // Check for new achievements
           const newAchievements = checkNewAchievements(updatedProgress);
           
@@ -325,12 +336,50 @@ export const useStore = create<AppState>()(
       },
       
       loadProgressFromFirestore: async () => {
-        const { firebaseUser } = get();
+        const { firebaseUser, allModules } = get();
         if (!firebaseUser) return;
         
         try {
           const progress = await getUserProgress(firebaseUser.uid);
           if (progress) {
+            // Only backfill if modules are loaded
+            if (Object.keys(allModules).length > 0) {
+              // Backfill completed modules based on completed lessons
+              const updatedCompletedModules = [...progress.completedModules];
+              
+              // Check all industries for modules that should be marked as completed
+              Object.entries(allModules).forEach(([industry, modules]) => {
+                modules.forEach((module) => {
+                  // Skip if already marked as completed
+                  if (updatedCompletedModules.includes(module.id)) return;
+                  
+                  // Check if all lessons in this module are completed
+                  const completedLessonsCount = module.lessons.filter(lesson =>
+                    progress.completedLessons.includes(lesson.id)
+                  ).length;
+                  
+                  // If all lessons are completed, mark module as completed
+                  if (completedLessonsCount === module.lessons.length && module.lessons.length > 0) {
+                    updatedCompletedModules.push(module.id);
+                  }
+                });
+              });
+              
+              // Update progress if we found any modules to backfill
+              if (updatedCompletedModules.length > progress.completedModules.length) {
+                const updatedProgress = {
+                  ...progress,
+                  completedModules: updatedCompletedModules,
+                };
+                set({ progress: updatedProgress });
+                
+                // Sync back to Firestore
+                await saveUserProgress(firebaseUser.uid, updatedProgress);
+                return;
+              }
+            }
+            
+            // If no backfill needed or modules not loaded, just set progress
             set({ progress });
           }
         } catch (error) {
