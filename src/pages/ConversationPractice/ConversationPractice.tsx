@@ -149,12 +149,12 @@ function ScenarioSelector({ scenarios, onSelect }: { scenarios: any[], onSelect:
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-2xl">{industryIcons[scenario.industry]}</span>
+                      <span className="text-2xl">{industryIcons[scenario.industry as keyof typeof industryIcons]}</span>
                       <h3 className="text-lg font-semibold text-gray-900">{scenario.title}</h3>
                     </div>
                     <p className="text-sm text-gray-600 mb-3">{scenario.description}</p>
                     <div className="flex items-center gap-2 text-xs">
-                      <span className={`px-2 py-1 rounded ${difficultyColors[scenario.difficulty]}`}>
+                      <span className={`px-2 py-1 rounded ${difficultyColors[scenario.difficulty as keyof typeof difficultyColors]}`}>
                         {scenario.difficulty}
                       </span>
                       <span className="text-gray-500 capitalize">{scenario.industry.replace('-', ' ')}</span>
@@ -348,7 +348,7 @@ function ConversationWindow({ scenario }: { scenario: ConversationScenario }) {
             <div className="card p-4 flex-1">
               <div className="flex items-start justify-between gap-3">
                 <p className="text-gray-900 flex-1">{currentNode.text || ''}</p>
-                <AudioController text={currentNode.text} />
+                <AudioController text={currentNode.text || ''} />
               </div>
             </div>
           </div>

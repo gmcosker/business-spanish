@@ -104,7 +104,7 @@ export default function LearningPath() {
             >
               <Briefcase className="w-4 h-4" />
               <span className="font-medium">
-                {currentIndustry ? industries[currentIndustry].name : 'Select Industry'}
+                {currentIndustry ? industries[currentIndustry as keyof typeof industries].name : 'Select Industry'}
               </span>
             </button>
             
@@ -152,7 +152,7 @@ export default function LearningPath() {
           <div className="flex items-center justify-between mb-2">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                {currentIndustry ? industries[currentIndustry].name : 'Overall'} Progress
+                {currentIndustry ? industries[currentIndustry as keyof typeof industries].name : 'Overall'} Progress
               </h2>
               <p className="text-sm text-gray-600">
                 {completedModulesInCurrentIndustry} of {modules.length} modules completed
