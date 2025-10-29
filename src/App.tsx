@@ -97,7 +97,8 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/assessment" element={<SkillsAssessment />} />
           <Route path="/payment-success" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/landing" replace />} />
+          <Route path="*" element={<Navigate to="/landing" replace />} />
         </Routes>
       </BrowserRouter>
     );

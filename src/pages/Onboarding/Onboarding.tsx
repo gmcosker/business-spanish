@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import type { LanguageLevel, Industry } from '../../types';
@@ -276,13 +277,15 @@ function GoalStep({
   onComplete: () => void;
   currentGoal?: string;
 }) {
+  const navigate = useNavigate();
   const { updateOnboarding } = useStore();
   const [goal, setGoal] = useState(currentGoal || '');
   const [targetDate, setTargetDate] = useState('');
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     updateOnboarding({ goal, targetDate });
-    onComplete();
+    // Redirect to assessment instead of completing onboarding
+    navigate('/assessment');
   };
 
   return (
@@ -328,7 +331,7 @@ function GoalStep({
           disabled={!goal}
           className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Complete Setup <ArrowRight className="w-5 h-5" />
+          Take Assessment <ArrowRight className="w-5 h-5" />
         </button>
       </div>
     </div>
