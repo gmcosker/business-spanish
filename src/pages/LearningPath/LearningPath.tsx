@@ -308,12 +308,17 @@ export default function LearningPath() {
                   {isUnlocked && (
                     <div className="space-y-2">
                       {module.lessons.map((lesson, lessonIndex) => {
-                        const lessonCompleted = progress.completedLessons.includes(lesson.id);
                         // In quick mode, all lessons are unlocked; otherwise follow normal progression
                         const lessonUnlocked =
                           quickMode ||
                           lessonIndex === 0 ||
                           progress.completedLessons.includes(module.lessons[lessonIndex - 1]?.id);
+                        
+                        // Only show lesson as completed if:
+                        // 1. It's in completedLessons AND
+                        // 2. The module is unlocked AND
+                        // 3. The lesson itself is unlocked (to prevent showing completed lessons from locked modules)
+                        const lessonCompleted = isUnlocked && lessonUnlocked && progress.completedLessons.includes(lesson.id);
 
                         return (
                           <button
