@@ -5,10 +5,13 @@ import { useState, useEffect, useRef } from 'react';
 import { hasFeatureAccess, getUpgradeUrl, getFeatureLimitMessage } from '../../utils/subscription';
 
 export default function LearningPath() {
-  const { modules, progress, allModules, currentIndustry, setCurrentIndustry, quickMode, toggleQuickMode, user } = useStore();
+  const { progress, allModules, currentIndustry, setCurrentIndustry, quickMode, toggleQuickMode, user } = useStore();
   const navigate = useNavigate();
   const [showIndustrySelector, setShowIndustrySelector] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
+  
+  // Get modules for the current industry
+  const modules = currentIndustry ? (allModules[currentIndustry] || []) : [];
 
   // Close industry selector when clicking outside
   useEffect(() => {
@@ -155,7 +158,7 @@ export default function LearningPath() {
                 {currentIndustry ? industries[currentIndustry as keyof typeof industries].name : 'Overall'} Progress
               </h2>
               <p className="text-sm text-gray-600">
-                {completedModulesInCurrentIndustry} of {modules.length} modules completed
+                {completedModulesInCurrentIndustry} of {modules.length || 0} modules completed
                 {currentIndustry && (
                   <span className="ml-2 text-xs text-gray-500">
                     ({totalCompletedModules} total across all industries)

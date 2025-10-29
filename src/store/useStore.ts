@@ -84,7 +84,24 @@ export const useStore = create<AppState>()(
         })),
       
       completeOnboarding: async () => {
-        const { onboardingData, firebaseUser } = get();
+        const { onboardingData, firebaseUser, setAllModules, setCurrentIndustry } = get();
+        
+        // Load all industry modules
+        const { techModules } = await import('../data/sampleModules');
+        const { financeModules } = await import('../data/financeModules');
+        const { logisticsModules } = await import('../data/logisticsModules');
+        const { customerServiceModules } = await import('../data/customerServiceModules');
+        
+        // Store all modules by industry
+        setAllModules('tech', techModules);
+        setAllModules('finance', financeModules);
+        setAllModules('logistics', logisticsModules);
+        setAllModules('customer-service', customerServiceModules);
+        
+        // Set the initial industry based on user selection
+        const initialIndustry = onboardingData.industry || 'tech';
+        setCurrentIndustry(initialIndustry);
+        
         const user: User = {
           id: firebaseUser?.uid || Date.now().toString(),
           name: firebaseUser?.displayName || 'User',
