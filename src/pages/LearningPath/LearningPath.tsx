@@ -228,8 +228,19 @@ export default function LearningPath() {
           ).length;
           const totalLessons = module.lessons.length;
           const isCompleted = progress.completedModules.includes(module.id);
+          
+          // Check if previous module is fully completed (all lessons done)
+          const previousModuleFullyCompleted = index === 0 || (() => {
+            const prevModule = modules[index - 1];
+            if (!prevModule) return true;
+            const prevCompleted = prevModule.lessons.filter((l) =>
+              progress.completedLessons.includes(l.id)
+            ).length;
+            return prevCompleted === prevModule.lessons.length;
+          })();
+          
           // In quick mode, all modules are unlocked; otherwise follow normal progression
-          const isUnlocked = quickMode || index === 0 || progress.completedModules.includes(modules[index - 1]?.id);
+          const isUnlocked = quickMode || index === 0 || previousModuleFullyCompleted;
 
           return (
             <div
