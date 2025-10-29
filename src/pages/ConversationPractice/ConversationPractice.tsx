@@ -347,7 +347,7 @@ function ConversationWindow({ scenario }: { scenario: ConversationScenario }) {
             </div>
             <div className="card p-4 flex-1">
               <div className="flex items-start justify-between gap-3">
-                <p className="text-gray-900 flex-1">{currentNode.text}</p>
+                <p className="text-gray-900 flex-1">{currentNode.text || ''}</p>
                 <AudioController text={currentNode.text} />
               </div>
             </div>

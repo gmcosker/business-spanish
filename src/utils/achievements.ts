@@ -159,7 +159,7 @@ export function checkNewAchievements(progress: UserProgress): Achievement[] {
   }
 
   // Check weekly goal
-  if (progress.weeklyProgress >= progress.weeklyGoal && !existingIds.has('perfect-week')) {
+  if (progress.weeklyProgressCount >= progress.weeklyGoal && !existingIds.has('perfect-week')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.PERFECT_WEEK,
       unlockedAt: new Date().toISOString(),

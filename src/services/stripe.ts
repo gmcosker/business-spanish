@@ -47,6 +47,7 @@ export async function redirectToCheckout(sessionId: string): Promise<void> {
       throw new Error('Stripe not initialized');
     }
 
+    // @ts-ignore - Stripe.js methods
     const { error } = await stripe.redirectToCheckout({ sessionId });
     
     if (error) {
