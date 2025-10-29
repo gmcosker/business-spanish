@@ -1,11 +1,25 @@
 import { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { User, Target, Award, TrendingUp, Settings, LogOut, Palette, Bell, Volume2, Sun, Moon, Monitor } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from '../../services/auth';
 import type { UserPreferences } from '../../types';
 
 export default function Profile() {
-  const { user, progress, modules, resetApp, updateUserPreferences } = useStore();
+  const { user, progress, modules, resetApp, updateUserPreferences, setFirebaseUser } = useStore();
+  const navigate =olineNavigate();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setFirebaseUser(null);
+      resetApp();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
   
   // Initialize preferences with defaults
   const preferences = user?.preferences || {
