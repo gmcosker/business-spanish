@@ -7,7 +7,7 @@ import type { UserPreferences } from '../../types';
 
 export default function Profile() {
   const { user, progress, modules, resetApp, updateUserPreferences, setFirebaseUser } = useStore();
-  const navigate =olineNavigate();
+  const navigate = useNavigate();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   
   const handleSignOut = async () => {
@@ -327,6 +327,18 @@ export default function Profile() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Sign Out */}
+          <div className="card p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Account</h3>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
           </div>
 
           {/* Danger zone */}
