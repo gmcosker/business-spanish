@@ -139,8 +139,34 @@ export const useStore = create<AppState>()(
       },
       
       completeLesson: async (lessonId) => {
-        const { progress, firebaseUser } = get();
+        const { progress, firebaseUser, allModules, currentIndustry } = get();
         if (!progress) return;
+        
+        // Validate that the lesson exists and is in an accessible module
+        const modules = currentIndustry ? (allModules[currentIndustry] || []) : [];
+        const lesson = modules.flatMap(m => m.lessons).find(l => l.id === lessonId);
+        const module = modules.find(m => m.lessons.some(l => l.id === lessonId));
+        
+        if (!lesson || !module) {
+          console.warn(`Cannot complete lesson ${lessonId}: lesson or module not found`);
+          return;
+        }
+        
+        // Check if module is unlocked (first module is always unlocked, or previous module must be fully completed)
+        const moduleIndex = modules.findIndex(m => m.id === module.id);
+        const isModuleUnlocked = moduleIndex === 0 || (() => {
+          const prevModule = modules[moduleIndex - 1];
+          if (!prevModule) return true;
+          const prevCompleted = prevModule.lessons.filter(l => 
+            progress.completedLessons.includes(l.id)
+          ).length;
+          return prevCompleted === prevModule.lessons.length;
+        })();
+        
+        if (!isModuleUnlocked) {
+          console.warn(`Cannot complete lesson ${lessonId}: module is not unlocked yet`);
+          return;
+        }
         
         if (!progress.completedLessons.includes(lessonId)) {
           const updatedProgress = {
