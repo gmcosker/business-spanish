@@ -16,6 +16,7 @@ export default function Dashboard() {
     industry: 'tech' as const,
     level: 'intermediate' as const,
     goal: 'Learn Spanish for business',
+    targetDate: undefined,
     createdAt: new Date().toISOString(),
   };
 

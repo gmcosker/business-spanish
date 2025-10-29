@@ -1,7 +1,7 @@
 export interface DialogueNode {
   id: string;
   speaker: 'ai' | 'user';
-  text: string;
+  text?: string; // Optional for user nodes
   expectedResponses?: string[];
   followUpNodes?: string[];
   feedbackHints?: string;

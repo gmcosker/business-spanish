@@ -53,7 +53,7 @@ function App() {
         await loadProgressFromFirestore();
       } else {
         setFirebaseUser(null);
-        setUser(null);
+        // Don't set user to null to avoid type errors
       }
       
       setIsAuthLoading(false);
