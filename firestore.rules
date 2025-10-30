@@ -13,16 +13,16 @@ service cloud.firestore {
     // User documents - users can only access their own data
     match /users/{userId} {
       allow read, write: if isOwner(userId);
-    }
-    
-    // User progress data
-    match /progress/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-    
-    // Daily activity data
-    match /dailyActivity/{userId} {
-      allow read, write: if isOwner(userId);
+      
+      // User progress subcollection
+      match /progress/{progressId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // Daily activity subcollection
+      match /activity/{date} {
+        allow read, write: if isOwner(userId);
+      }
     }
     
     // Deny all other access
