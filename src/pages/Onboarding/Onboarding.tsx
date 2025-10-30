@@ -19,27 +19,9 @@ export default function Onboarding() {
   };
 
   const handleComplete = async () => {
-    // Load all industry modules
-    const { techModules } = await import('../../data/sampleModules');
-    const { financeModules } = await import('../../data/financeModules');
-    const { logisticsModules } = await import('../../data/logisticsModules');
-    const { customerServiceModules } = await import('../../data/customerServiceModules');
-    const { architectureModules } = await import('../../data/architectureModules');
-    const { healthcareModules } = await import('../../data/healthcareModules');
-    
-    // Store all modules by industry
-    setAllModules('tech', techModules);
-    setAllModules('finance', financeModules);
-    setAllModules('logistics', logisticsModules);
-    setAllModules('customer-service', customerServiceModules);
-    setAllModules('architecture', architectureModules);
-    setAllModules('healthcare', healthcareModules);
-    
-    // Set the initial industry based on user selection
-    const initialIndustry = onboardingData.industry || 'tech';
-    setCurrentIndustry(initialIndustry);
-    
-    completeOnboarding();
+    // DO NOT complete onboarding here - just navigate to assessment
+    // Onboarding will be completed after assessment finishes
+    navigate('/assessment');
   };
 
   return (
@@ -297,10 +279,10 @@ function GoalStep({
   const [targetDate, setTargetDate] = useState('');
 
   const handleComplete = async () => {
+    // Save goal and target date to onboarding data
     updateOnboarding({ goal, targetDate });
-    // Finish onboarding (loads modules and clears isOnboarding)
-    await onComplete();
-    // Then send user to the assessment
+    // Navigate to assessment - do NOT complete onboarding yet
+    // Onboarding will be completed after assessment finishes
     navigate('/assessment');
   };
 
