@@ -37,6 +37,7 @@ interface AppState {
   clearNewAchievements: () => void;
   toggleQuickMode: () => void;
   resetApp: () => void;
+  backfillCompletedModules: () => Promise<void>;
 }
 
 const initialOnboarding: OnboardingData = {
@@ -390,6 +391,50 @@ export const useStore = create<AppState>()(
       clearNewAchievements: () => set({ newAchievements: [] }),
       
       toggleQuickMode: () => set((state) => ({ quickMode: !state.quickMode })),
+      
+      backfillCompletedModules: async () => {
+        const { progress, firebaseUser, allModules } = get();
+        if (!progress || Object.keys(allModules).length === 0) return;
+        
+        // Backfill completed modules based on completed lessons
+        const updatedCompletedModules = [...progress.completedModules];
+        
+        // Check all industries for modules that should be marked as completed
+        Object.entries(allModules).forEach(([industry, modules]) => {
+          modules.forEach((module) => {
+            // Skip if already marked as completed
+            if (updatedCompletedModules.includes(module.id)) return;
+            
+            // Check if all lessons in this module are completed
+            const completedLessonsCount = module.lessons.filter(lesson =>
+              progress.completedLessons.includes(lesson.id)
+            ).length;
+            
+            // If all lessons are completed, mark module as completed
+            if (completedLessonsCount === module.lessons.length && module.lessons.length > 0) {
+              updatedCompletedModules.push(module.id);
+            }
+          });
+        });
+        
+        // Update progress if we found any modules to backfill
+        if (updatedCompletedModules.length > progress.completedModules.length) {
+          const updatedProgress = {
+            ...progress,
+            completedModules: updatedCompletedModules,
+          };
+          set({ progress: updatedProgress });
+          
+          // Sync back to Firestore if authenticated
+          if (firebaseUser) {
+            try {
+              await saveUserProgress(firebaseUser.uid, updatedProgress);
+            } catch (error) {
+              console.error('Error saving backfilled progress:', error);
+            }
+          }
+        }
+      },
       
       resetApp: () => 
         set({

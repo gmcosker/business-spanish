@@ -5,13 +5,20 @@ import { useState, useEffect, useRef } from 'react';
 import { hasFeatureAccess, getUpgradeUrl, getFeatureLimitMessage } from '../../utils/subscription';
 
 export default function LearningPath() {
-  const { progress, allModules, currentIndustry, setCurrentIndustry, quickMode, toggleQuickMode, user } = useStore();
+  const { progress, allModules, currentIndustry, setCurrentIndustry, quickMode, toggleQuickMode, user, backfillCompletedModules } = useStore();
   const navigate = useNavigate();
   const [showIndustrySelector, setShowIndustrySelector] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
   
   // Get modules for the current industry
   const modules = currentIndustry ? (allModules[currentIndustry] || []) : [];
+
+  // Backfill completed modules when component mounts or when modules/progress become available
+  useEffect(() => {
+    if (progress && Object.keys(allModules).length > 0) {
+      backfillCompletedModules();
+    }
+  }, [progress, allModules, backfillCompletedModules]);
 
   // Close industry selector when clicking outside
   useEffect(() => {
