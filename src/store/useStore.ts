@@ -156,8 +156,16 @@ export const useStore = create<AppState>()(
         
         // Save to Firestore if authenticated
         if (firebaseUser) {
-          const { saveUserProgress } = await import('../services/firestore');
-          await saveUserProgress(firebaseUser.uid, progress);
+          try {
+            const { saveUserProgress } = await import('../services/firestore');
+            await saveUserProgress(firebaseUser.uid, progress);
+            console.log('✅ Onboarding complete - progress saved to Firestore');
+          } catch (error) {
+            console.error('❌ Failed to save progress to Firestore:', error);
+            // Don't throw - user can still continue, progress will sync later
+          }
+        } else {
+          console.warn('⚠️ No firebaseUser - progress not saved to Firestore');
         }
       },
       
@@ -366,7 +374,9 @@ export const useStore = create<AppState>()(
           const progress = await getUserProgress(firebaseUser.uid);
           if (progress) {
             // User has progress = onboarding is complete
-            set({ isOnboarding: false });
+            // Set both progress AND isOnboarding together to avoid race conditions
+            set({ progress, isOnboarding: false });
+            console.log('✅ Loaded progress from Firestore - onboarding complete');
             // Only backfill if modules are loaded
             if (Object.keys(allModules).length > 0) {
               // Backfill completed modules based on completed lessons
@@ -404,11 +414,16 @@ export const useStore = create<AppState>()(
               }
             }
             
-            // If no backfill needed or modules not loaded, just set progress
-            set({ progress });
+            // If no backfill needed or modules not loaded, progress and isOnboarding already set above
+          } else {
+            // No progress found - user needs onboarding
+            console.log('⚠️ No progress found in Firestore - user needs onboarding');
+            set({ isOnboarding: true });
           }
         } catch (error) {
           console.error('Error loading from Firestore:', error);
+          // On error, assume onboarding not complete to be safe
+          set({ isOnboarding: true });
         }
       },
       

@@ -96,8 +96,9 @@ function App() {
           <Route path="/signup" element={<Login />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/assessment" element={<SkillsAssessment />} />
-          <Route path="/payment-success" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/payment-success" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/landing" replace />} />
+          <Route path="*" element={<Navigate to="/landing" replace />} />
         </Routes>
       </BrowserRouter>
     );
@@ -109,7 +110,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/assessment" element={<SkillsAssessment />} />
-          <Route path="*" element={<Onboarding />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/" element={<Navigate to="/onboarding" replace />} />
+          <Route path="*" element={<Navigate to="/onboarding" replace />} />
         </Routes>
       </BrowserRouter>
     );
