@@ -95,14 +95,14 @@ export function checkNewAchievements(progress: UserProgress): Achievement[] {
   if (progress.completedLessons.length >= 1 && !existingIds.has('first-lesson')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.FIRST_LESSON,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
   if (progress.completedLessons.length >= 5 && !existingIds.has('five-lessons')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.FIVE_LESSONS,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
@@ -110,7 +110,7 @@ export function checkNewAchievements(progress: UserProgress): Achievement[] {
   if (progress.completedModules.length >= 1 && !existingIds.has('first-module')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.FIRST_MODULE,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
@@ -118,21 +118,21 @@ export function checkNewAchievements(progress: UserProgress): Achievement[] {
   if (progress.streakDays >= 3 && !existingIds.has('streak-3')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.STREAK_3,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
   if (progress.streakDays >= 7 && !existingIds.has('streak-7')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.STREAK_7,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
   if (progress.streakDays >= 30 && !existingIds.has('streak-30')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.STREAK_30,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
@@ -140,21 +140,21 @@ export function checkNewAchievements(progress: UserProgress): Achievement[] {
   if (progress.vocabularyMastered >= 25 && !existingIds.has('vocab-25')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.VOCAB_25,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
   if (progress.vocabularyMastered >= 100 && !existingIds.has('vocab-100')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.VOCAB_100,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
   if (progress.vocabularyMastered >= 500 && !existingIds.has('vocab-500')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.VOCAB_500,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 
@@ -162,7 +162,7 @@ export function checkNewAchievements(progress: UserProgress): Achievement[] {
   if (progress.weeklyProgressCount >= progress.weeklyGoal && !existingIds.has('perfect-week')) {
     newAchievements.push({
       ...ACHIEVEMENT_DEFINITIONS.PERFECT_WEEK,
-      unlockedAt: new Date().toISOString(),
+      earnedAt: new Date().toISOString(),
     });
   }
 

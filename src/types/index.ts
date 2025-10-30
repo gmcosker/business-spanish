@@ -137,3 +137,11 @@ export interface Bookmark {
   type: 'lesson' | 'vocabulary';
   createdAt: string;
 }
+
+export interface OnboardingData {
+  step: number;
+  level?: LanguageLevel;
+  industry?: Industry;
+  goal?: string;
+  targetDate?: string;
+}

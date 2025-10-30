@@ -224,7 +224,7 @@ export const techModules: Module[] = [
           practiceExercises: [
             {
               id: 'ex1',
-              type: 'fill-blank',
+              type: 'writing',
               question: 'Complete the email greeting: _____ Sr. López:',
               correctAnswer: 'Estimado',
               explanation: 'Use "Estimado" (masculine) or "Estimada" (feminine) for formal business emails.',

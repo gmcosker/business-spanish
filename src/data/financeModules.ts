@@ -308,7 +308,7 @@ export const financeModules: Module[] = [
             },
             {
               id: 'fex2',
-              type: 'fill-blank',
+              type: 'writing',
               question: 'Complete: El _____ de caja muestra entradas y salidas de dinero.',
               correctAnswer: 'flujo',
               explanation: '"Flujo de caja" means cash flow.',

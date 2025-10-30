@@ -52,7 +52,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           if (
             vocab.term.toLowerCase().includes(lowerQuery) ||
             vocab.translation.toLowerCase().includes(lowerQuery) ||
-            vocab.example.toLowerCase().includes(lowerQuery)
+            (vocab.example && vocab.example.toLowerCase().includes(lowerQuery))
           ) {
             searchResults.vocabulary.push({
               ...vocab,

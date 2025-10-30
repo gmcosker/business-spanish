@@ -251,7 +251,7 @@ export default function LessonViewer() {
           <div className="mb-8">
             <SpeechPractice
               targetPhrase={lesson.content.dialogue[0].text}
-              translation={lesson.content.dialogue[0].translation}
+              translation={lesson.content.dialogue[0].translation || ''}
             />
           </div>
         )}
