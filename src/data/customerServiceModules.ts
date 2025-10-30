@@ -467,6 +467,132 @@ export const customerServiceModules: Module[] = [
       },
     ],
   },
+  {
+    id: 'cs-2',
+    title: 'Handling Complaints & Escalations',
+    description: 'Acknowledge issues, apologize, resolve, and escalate in Spanish.',
+    industry: 'customer-service',
+    order: 2,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'cs-2-1', moduleId: 'cs-2', title: 'Acknowledge & Apologize', type: 'dialogue', order: 1, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Agent', text: 'Lamento lo ocurrido; voy a resolverlo ahora mismo.', translation: 'I’m sorry for what happened; I will resolve it right away.' } ], vocabulary: [ { id: 'cs2v1', term: 'disculpa', translation: 'apology', context: 'Service', example: 'Ofrezca una disculpa sincera.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-2-2', moduleId: 'cs-2', title: 'Resolution & Follow-up', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Agent', text: 'Reemplazaremos el producto y confirmaremos por correo.', translation: 'We’ll replace the product and confirm by email.' } ], vocabulary: [ { id: 'cs2v2', term: 'seguimiento', translation: 'follow-up', context: 'Service', example: 'Haremos seguimiento mañana.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-2-3', moduleId: 'cs-2', title: 'Escalations', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'cs2v3', term: 'escalación', translation: 'escalation', context: 'Support', example: 'Abrimos escalación al equipo técnico.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-3',
+    title: 'Billing & Payment Issues',
+    description: 'Invoices, refunds, charge disputes, and receipts in Spanish.',
+    industry: 'customer-service',
+    order: 3,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'cs-3-1', moduleId: 'cs-3', title: 'Invoice & Receipt', type: 'dialogue', order: 1, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Agent', text: 'Le envío la factura y el recibo por correo.', translation: 'I’m sending the invoice and the receipt by email.' } ], vocabulary: [ { id: 'cs3v1', term: 'factura', translation: 'invoice', context: 'Billing', example: 'La factura fue emitida hoy.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-3-2', moduleId: 'cs-3', title: 'Refunds & Adjustments', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Agent', text: 'Procesaremos el reembolso en 3 a 5 días hábiles.', translation: 'We will process the refund in 3–5 business days.' } ], vocabulary: [ { id: 'cs3v2', term: 'reembolso', translation: 'refund', context: 'Billing', example: 'El reembolso fue aprobado.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-3-3', moduleId: 'cs-3', title: 'Charge Disputes', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'cs3v3', term: 'contracargo', translation: 'chargeback', context: 'Payments', example: 'Abrimos disputa por contracargo.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-4',
+    title: 'Technical Support',
+    description: 'Troubleshooting, device/app diagnostics, and resolution steps in Spanish.',
+    industry: 'customer-service',
+    order: 4,
+    estimatedMinutes: 60,
+    completed: false,
+    lessons: [
+      { id: 'cs-4-1', moduleId: 'cs-4', title: 'Troubleshooting Basics', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Tech', text: 'Reinicie la aplicación y borre caché, por favor.', translation: 'Please restart the app and clear cache.' } ], vocabulary: [ { id: 'cs4v1', term: 'diagnóstico', translation: 'diagnostics', context: 'Support', example: 'Hicimos diagnóstico remoto.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-4-2', moduleId: 'cs-4', title: 'Device/App Checks', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'cs4v2', term: 'caché', translation: 'cache', context: 'Support', example: 'Limpiamos la caché para resolver el error.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-4-3', moduleId: 'cs-4', title: 'Resolution & Verification', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Tech', text: '¿Puede confirmar si el problema quedó resuelto?', translation: 'Can you confirm the issue is resolved?' } ], vocabulary: [ { id: 'cs4v3', term: 'incidencia', translation: 'incident', context: 'Support', example: 'La incidencia quedó resuelta.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-5',
+    title: 'Sales & Upselling',
+    description: 'Qualification, offers, upgrade paths, and closing in Spanish.',
+    industry: 'customer-service',
+    order: 5,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'cs-5-1', moduleId: 'cs-5', title: 'Discover Needs', type: 'dialogue', order: 1, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Agent', text: 'Para recomendarle mejor, ¿qué objetivos tiene?', translation: 'To recommend better, what goals do you have?' } ], vocabulary: [ { id: 'cs5v1', term: 'oferta', translation: 'offer', context: 'Sales', example: 'Presentamos una oferta personalizada.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-5-2', moduleId: 'cs-5', title: 'Present & Close', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Agent', text: 'Con este plan, ahorrará 20%.', translation: 'With this plan, you’ll save 20%.' } ], vocabulary: [ { id: 'cs5v2', term: 'ampliación', translation: 'upsell/expansion', context: 'Sales', example: 'Ofrecimos ampliación de servicio.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-5-3', moduleId: 'cs-5', title: 'Objections', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'cs5v3', term: 'objeción', translation: 'objection', context: 'Sales', example: 'Manejamos objeciones con beneficios claros.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-6',
+    title: 'Social Media Customer Care',
+    description: 'Respond to posts/DMs, moderate, and resolve publicly in Spanish.',
+    industry: 'customer-service',
+    order: 6,
+    estimatedMinutes: 50,
+    completed: false,
+    lessons: [
+      { id: 'cs-6-1', moduleId: 'cs-6', title: 'Public Replies', type: 'dialogue', order: 1, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Agent', text: 'Gracias por escribirnos; revisamos su caso por DM.', translation: 'Thanks for writing; we’ll review your case by DM.' } ], vocabulary: [ { id: 'cs6v1', term: 'moderación', translation: 'moderation', context: 'Social', example: 'Hacemos moderación activa.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-6-2', moduleId: 'cs-6', title: 'DM Workflow', type: 'vocabulary', order: 2, completed: false, duration: 15, content: { vocabulary: [ { id: 'cs6v2', term: 'mensaje directo', translation: 'direct message', context: 'Social', example: 'Solicitamos datos por mensaje directo.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-6-3', moduleId: 'cs-6', title: 'Public Resolution', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Agent', text: 'Caso resuelto; gracias por su paciencia.', translation: 'Case resolved; thanks for your patience.' } ], vocabulary: [ { id: 'cs6v3', term: 'visibilidad', translation: 'visibility', context: 'Social', example: 'La resolución pública mejora visibilidad positiva.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-7',
+    title: 'Account Management',
+    description: 'Onboarding, QBRs, and renewals for B2B clients in Spanish.',
+    industry: 'customer-service',
+    order: 7,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'cs-7-1', moduleId: 'cs-7', title: 'Onboarding Call', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'AM', text: 'Definamos objetivos y responsables.', translation: 'Let’s define goals and owners.' } ], vocabulary: [ { id: 'cs7v1', term: 'hitos', translation: 'milestones', context: 'Project', example: 'Acordamos hitos de implementación.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-7-2', moduleId: 'cs-7', title: 'QBR', type: 'vocabulary', order: 2, completed: false, duration: 15, content: { vocabulary: [ { id: 'cs7v2', term: 'QBR', translation: 'quarterly business review', context: 'Account Mgmt', example: 'El QBR repasó métricas clave.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-7-3', moduleId: 'cs-7', title: 'Renewal Strategy', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'AM', text: 'Proponemos renovación anticipada con descuento.', translation: 'We propose early renewal with a discount.' } ], vocabulary: [ { id: 'cs7v3', term: 'riesgo de salida', translation: 'churn risk', context: 'Account Mgmt', example: 'El riesgo de salida bajó tras el plan de éxito.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-8',
+    title: 'Retention & Loyalty Programs',
+    description: 'Save offers, loyalty points, and win-back flows in Spanish.',
+    industry: 'customer-service',
+    order: 8,
+    estimatedMinutes: 50,
+    completed: false,
+    lessons: [
+      { id: 'cs-8-1', moduleId: 'cs-8', title: 'Save Offer', type: 'dialogue', order: 1, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Agent', text: 'Podemos ofrecer 20% de descuento si continúa.', translation: 'We can offer 20% off if you continue.' } ], vocabulary: [ { id: 'cs8v1', term: 'fidelización', translation: 'loyalty', context: 'Retention', example: 'El programa de fidelización sumó puntos.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-8-2', moduleId: 'cs-8', title: 'Points & Rewards', type: 'vocabulary', order: 2, completed: false, duration: 15, content: { vocabulary: [ { id: 'cs8v2', term: 'puntos', translation: 'points', context: 'Loyalty', example: 'Los puntos expiran después de 12 meses.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-8-3', moduleId: 'cs-8', title: 'Win-back Campaign', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Agent', text: 'Le extrañamos; tenemos una oferta de regreso.', translation: 'We miss you; we have a win-back offer.' } ], vocabulary: [ { id: 'cs8v3', term: 'reenganche', translation: 'win-back', context: 'Retention', example: 'La campaña de reenganche fue efectiva.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-9',
+    title: 'Multi‑channel Support (Phone/Chat/Email)',
+    description: 'Channel routing, SLAs, and handoffs in Spanish.',
+    industry: 'customer-service',
+    order: 9,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'cs-9-1', moduleId: 'cs-9', title: 'Phone Etiquette', type: 'dialogue', order: 1, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Agent', text: 'Gracias por llamar, le atiende Sofía.', translation: 'Thank you for calling, Sofía speaking.' } ], vocabulary: [ { id: 'cs9v1', term: 'derivación', translation: 'transfer/route', context: 'Contact center', example: 'Hacemos derivación al equipo experto.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-9-2', moduleId: 'cs-9', title: 'Chat & Email', type: 'vocabulary', order: 2, completed: false, duration: 15, content: { vocabulary: [ { id: 'cs9v2', term: 'macro', translation: 'macro/templated reply', context: 'Chat/Email', example: 'Usamos macros con personalización.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-9-3', moduleId: 'cs-9', title: 'Handoffs', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Agent', text: 'Le paso con el especialista; resumo el caso.', translation: 'I’ll transfer you to the specialist; summarizing the case.' } ], vocabulary: [ { id: 'cs9v3', term: 'handoff', translation: 'handoff', context: 'Support', example: 'Hicimos handoff sin pérdida de contexto.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'cs-10',
+    title: 'Quality Assurance & Training',
+    description: 'QA scorecards, call calibration, and training plans in Spanish.',
+    industry: 'customer-service',
+    order: 10,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'cs-10-1', moduleId: 'cs-10', title: 'QA Scorecards', type: 'vocabulary', order: 1, completed: false, duration: 15, content: { vocabulary: [ { id: 'cs10v1', term: 'calibración', translation: 'calibration', context: 'QA', example: 'Hicimos calibración con los evaluadores.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-10-2', moduleId: 'cs-10', title: 'Coaching & Shadowing', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Coach', text: 'Hagamos shadowing y coaching en vivo.', translation: 'Let’s do live shadowing and coaching.' } ], vocabulary: [ { id: 'cs10v2', term: 'guion', translation: 'script', context: 'Training', example: 'Actualizamos el guion del saludo.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'cs-10-3', moduleId: 'cs-10', title: 'Continuous Improvement', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'QA Lead', text: 'Revisamos métricas y acciones correctivas.', translation: 'We review metrics and corrective actions.' } ], vocabulary: [ { id: 'cs10v3', term: 'acción correctiva', translation: 'corrective action', context: 'QA', example: 'Implementamos acciones correctivas mensuales.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  }
 ];
 
 

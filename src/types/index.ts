@@ -1,4 +1,4 @@
-export type Industry = 'tech' | 'finance' | 'logistics' | 'customer-service';
+export type Industry = 'tech' | 'finance' | 'logistics' | 'customer-service' | 'architecture' | 'healthcare';
 
 export type LanguageLevel = 'beginner' | 'intermediate' | 'advanced';
 
@@ -60,43 +60,41 @@ export interface LessonContent {
 export interface DialogueLine {
   speaker: string;
   text: string;
-  translation: string;
-  audioUrl?: string;
+  translation?: string;
 }
 
 export interface VocabularyItem {
   id: string;
   term: string;
   translation: string;
-  context: string;
-  example: string;
-  audioUrl?: string;
-  nextReview: string;
-  interval: number; // SRS interval in days
-  easeFactor: number;
+  context?: string;
+  example?: string;
+  nextReview: string; // ISO date
+  interval: number; // days
+  easeFactor: number; // SM-2 EF
   repetitions: number;
 }
 
 export interface PracticeExercise {
   id: string;
-  type: 'fill-blank' | 'multiple-choice' | 'speaking' | 'matching';
+  type: 'multiple-choice' | 'speaking' | 'writing' | 'listening';
   question: string;
   options?: string[];
-  correctAnswer: string;
+  correctAnswer?: string;
   explanation?: string;
 }
 
 export interface DailyActivity {
-  date: string;
+  date: string; // YYYY-MM-DD
   lessonsCompleted: number;
-  timeSpent: number; // in minutes
+  timeSpent: number; // minutes
   vocabularyReviewed: number;
 }
 
 export interface WeeklyProgress {
-  week: string; // "YYYY-WW" format
+  week: string;
   lessonsCompleted: number;
-  timeSpent: number;
+  timeSpentMinutes: number;
   averageAccuracy: number;
 }
 
@@ -109,28 +107,19 @@ export interface UserProgress {
   streakDays: number;
   lastActiveDate: string;
   weeklyGoal: number;
-  weeklyProgressCount: number; // Renamed to avoid conflict
+  weeklyProgressCount: number;
   achievements: Achievement[];
   totalTimeMinutes: number;
   dailyActivity: DailyActivity[];
-  weeklyProgressData: WeeklyProgress[]; // Detailed weekly data
-}
-
-export interface OnboardingData {
-  step: number;
-  level?: LanguageLevel;
-  industry?: Industry;
-  goal?: string;
-  targetDate?: string;
+  weeklyProgressData: WeeklyProgress[];
 }
 
 export interface Achievement {
   id: string;
   title: string;
   description: string;
-  icon: string;
-  unlockedAt: string;
-  category: 'milestone' | 'streak' | 'mastery' | 'social';
+  icon?: string;
+  earnedAt?: string;
 }
 
 export interface Note {

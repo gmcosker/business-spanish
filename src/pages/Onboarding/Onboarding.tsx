@@ -24,12 +24,16 @@ export default function Onboarding() {
     const { financeModules } = await import('../../data/financeModules');
     const { logisticsModules } = await import('../../data/logisticsModules');
     const { customerServiceModules } = await import('../../data/customerServiceModules');
+    const { architectureModules } = await import('../../data/architectureModules');
+    const { healthcareModules } = await import('../../data/healthcareModules');
     
     // Store all modules by industry
     setAllModules('tech', techModules);
     setAllModules('finance', financeModules);
     setAllModules('logistics', logisticsModules);
     setAllModules('customer-service', customerServiceModules);
+    setAllModules('architecture', architectureModules);
+    setAllModules('healthcare', healthcareModules);
     
     // Set the initial industry based on user selection
     const initialIndustry = onboardingData.industry || 'tech';
@@ -219,6 +223,16 @@ function IndustryStep({
       label: 'Customer Service',
       description: 'Sales, support, client relations',
     },
+    {
+      value: 'architecture',
+      label: 'Architecture & Construction',
+      description: 'Drawings, RFIs, site coordination, PM collaboration',
+    },
+    {
+      value: 'healthcare',
+      label: 'Healthcare & Medical Admin',
+      description: 'Patient intake, triage, care instructions, admin',
+    },
   ];
 
   const handleContinue = () => {
@@ -284,7 +298,9 @@ function GoalStep({
 
   const handleComplete = async () => {
     updateOnboarding({ goal, targetDate });
-    // Redirect to assessment instead of completing onboarding
+    // Finish onboarding (loads modules and clears isOnboarding)
+    await onComplete();
+    // Then send user to the assessment
     navigate('/assessment');
   };
 
@@ -331,7 +347,7 @@ function GoalStep({
           disabled={!goal}
           className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Take Assessment <ArrowRight className="w-5 h-5" />
+          Continue to Assessment <ArrowRight className="w-5 h-5" />
         </button>
       </div>
     </div>

@@ -730,5 +730,496 @@ export const financeModules: Module[] = [
       },
     ],
   },
+  {
+    id: 'finance-3',
+    title: 'Accounting & Financial Reporting',
+    description: 'Prepare statements, discuss accruals, and present results in Spanish.',
+    industry: 'finance',
+    order: 3,
+    estimatedMinutes: 75,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-3-1',
+        moduleId: 'finance-3',
+        title: 'Income Statement & Balance Sheet',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 25,
+        content: {
+          dialogue: [
+            { speaker: 'Controller', text: 'Revisemos el estado de resultados y el balance general.', translation: 'Let’s review the income statement and the balance sheet.' },
+            { speaker: 'Analyst', text: 'El margen bruto mejoró 3 puntos.', translation: 'Gross margin improved by 3 points.' }
+          ],
+          vocabulary: [
+            { id: 'fa3v1', term: 'estado de resultados', translation: 'income statement', context: 'Accounting', example: 'El estado de resultados muestra crecimiento de ingresos.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa3v2', term: 'balance general', translation: 'balance sheet', context: 'Accounting', example: 'El balance general refleja los activos y pasivos.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-3-2',
+        moduleId: 'finance-3',
+        title: 'Accruals & Adjustments',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa3v3', term: 'acumulación (devengo)', translation: 'accrual', context: 'Accounting', example: 'Registramos el gasto por acumulación.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa3v4', term: 'asiento de ajuste', translation: 'adjusting entry', context: 'Accounting', example: 'Hicimos los asientos de ajuste de cierre.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-3-3',
+        moduleId: 'finance-3',
+        title: 'Quarterly Results Presentation',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 30,
+        content: {
+          dialogue: [
+            { speaker: 'CFO', text: 'Presentamos resultados trimestrales: EBITDA creció 12%.', translation: 'We present quarterly results: EBITDA grew 12%.' },
+            { speaker: 'Investor', text: '¿Cómo afectó el tipo de cambio?', translation: 'How did FX affect the results?' }
+          ],
+          vocabulary: [
+            { id: 'fa3v5', term: 'EBITDA', translation: 'EBITDA', context: 'Finance', example: 'El EBITDA mejoró gracias a eficiencia operativa.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa3v6', term: 'tipo de cambio', translation: 'exchange rate', context: 'Finance', example: 'El tipo de cambio impactó los costos.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-4',
+    title: 'Risk Management & Compliance',
+    description: 'Assess risk exposure, controls, and regulatory compliance in Spanish.',
+    industry: 'finance',
+    order: 4,
+    estimatedMinutes: 70,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-4-1',
+        moduleId: 'finance-4',
+        title: 'Risk Assessment',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 20,
+        content: {
+          dialogue: [
+            { speaker: 'Risk Lead', text: 'Identifiquemos riesgos operativos y de mercado.', translation: 'Let’s identify operational and market risks.' },
+            { speaker: 'Analyst', text: 'La exposición al riesgo de crédito es baja.', translation: 'Credit risk exposure is low.' }
+          ],
+          vocabulary: [
+            { id: 'fa4v1', term: 'controles internos', translation: 'internal controls', context: 'Risk', example: 'Auditamos los controles internos clave.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa4v2', term: 'cumplimiento normativo', translation: 'regulatory compliance', context: 'Risk/Compliance', example: 'Cumplimos con la normativa vigente.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-4-2',
+        moduleId: 'finance-4',
+        title: 'Policies & Audits',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa4v3', term: 'política de riesgo', translation: 'risk policy', context: 'Risk', example: 'Actualizamos la política de riesgo anual.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa4v4', term: 'auditoría', translation: 'audit', context: 'Compliance', example: 'Tenemos auditoría externa este mes.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-4-3',
+        moduleId: 'finance-4',
+        title: 'Regulatory Reporting',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 30,
+        content: {
+          dialogue: [
+            { speaker: 'Compliance', text: 'Entregaremos el reporte regulatorio a tiempo.', translation: 'We will submit the regulatory report on time.' }
+          ],
+          vocabulary: [
+            { id: 'fa4v5', term: 'supervisor', translation: 'regulatory supervisor', context: 'Compliance', example: 'Coordinamos con el supervisor financiero.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-5',
+    title: 'Commercial Lending & Credit Analysis',
+    description: 'Underwrite loans, analyze financials, and structure terms in Spanish.',
+    industry: 'finance',
+    order: 5,
+    estimatedMinutes: 75,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-5-1',
+        moduleId: 'finance-5',
+        title: 'Loan Underwriting',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 25,
+        content: {
+          dialogue: [
+            { speaker: 'Credit Officer', text: 'Analicemos flujo de caja y colateral.', translation: 'Let’s analyze cash flow and collateral.' }
+          ],
+          vocabulary: [
+            { id: 'fa5v1', term: 'flujo de caja', translation: 'cash flow', context: 'Lending', example: 'El flujo de caja es suficiente para el servicio de deuda.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa5v2', term: 'colateral', translation: 'collateral', context: 'Lending', example: 'El préstamo está respaldado por colateral.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-5-2',
+        moduleId: 'finance-5',
+        title: 'Covenants & Pricing',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa5v3', term: 'covenant', translation: 'covenant', context: 'Lending', example: 'Definimos covenants financieros claros.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa5v4', term: 'tasa de interés', translation: 'interest rate', context: 'Lending', example: 'La tasa de interés es variable.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-5-3',
+        moduleId: 'finance-5',
+        title: 'Credit Committee',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 30,
+        content: {
+          dialogue: [
+            { speaker: 'Chair', text: 'El comité recomienda aprobar el crédito.', translation: 'The committee recommends approving the loan.' }
+          ],
+          vocabulary: [
+            { id: 'fa5v5', term: 'comité de crédito', translation: 'credit committee', context: 'Lending', example: 'El comité de crédito revisa grandes operaciones.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-6',
+    title: 'Wealth Management & Advisory',
+    description: 'Advise clients on portfolios, risk tolerance, and planning in Spanish.',
+    industry: 'finance',
+    order: 6,
+    estimatedMinutes: 70,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-6-1',
+        moduleId: 'finance-6',
+        title: 'Client Discovery & Goals',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 20,
+        content: {
+          dialogue: [
+            { speaker: 'Advisor', text: 'Cuénteme sus objetivos y tolerancia al riesgo.', translation: 'Tell me about your goals and risk tolerance.' }
+          ],
+          vocabulary: [
+            { id: 'fa6v1', term: 'cartera', translation: 'portfolio', context: 'Investments', example: 'Diversificamos la cartera.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa6v2', term: 'tolerancia al riesgo', translation: 'risk tolerance', context: 'Investments', example: 'Definimos la tolerancia al riesgo antes de invertir.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-6-2',
+        moduleId: 'finance-6',
+        title: 'Asset Allocation',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa6v3', term: 'asignación de activos', translation: 'asset allocation', context: 'Investments', example: 'La asignación de activos cambió a 60/40.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa6v4', term: 'rebalanceo', translation: 'rebalancing', context: 'Investments', example: 'Hacemos rebalanceo trimestral.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-6-3',
+        moduleId: 'finance-6',
+        title: 'Planning & Monitoring',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 30,
+        content: {
+          dialogue: [
+            { speaker: 'Advisor', text: 'Revisamos el plan anualmente y ajustamos.', translation: 'We review the plan annually and adjust.' }
+          ],
+          vocabulary: [
+            { id: 'fa6v5', term: 'objetivos financieros', translation: 'financial goals', context: 'Planning', example: 'Definimos objetivos financieros SMART.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-7',
+    title: 'Insurance & Claims',
+    description: 'Policies, underwriting, and claims management in Spanish.',
+    industry: 'finance',
+    order: 7,
+    estimatedMinutes: 70,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-7-1',
+        moduleId: 'finance-7',
+        title: 'Policy Coverage & Premiums',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 20,
+        content: {
+          dialogue: [
+            { speaker: 'Agent', text: 'Revisemos coberturas y la prima anual.', translation: 'Let’s review coverages and the annual premium.' }
+          ],
+          vocabulary: [
+            { id: 'fa7v1', term: 'cobertura', translation: 'coverage', context: 'Insurance', example: 'La póliza incluye cobertura completa.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa7v2', term: 'prima', translation: 'premium', context: 'Insurance', example: 'La prima se paga anualmente.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-7-2',
+        moduleId: 'finance-7',
+        title: 'Claims Process',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa7v3', term: 'siniestro', translation: 'claim/incident', context: 'Insurance', example: 'Reportamos el siniestro dentro de 48 horas.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa7v4', term: 'deducible', translation: 'deductible', context: 'Insurance', example: 'El deducible es de $500.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-7-3',
+        moduleId: 'finance-7',
+        title: 'Underwriting & Risk',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 30,
+        content: {
+          dialogue: [
+            { speaker: 'Underwriter', text: 'Evaluamos riesgo y determinamos primas.', translation: 'We evaluate risk and determine premiums.' }
+          ],
+          vocabulary: [
+            { id: 'fa7v5', term: 'suscripción', translation: 'underwriting', context: 'Insurance', example: 'La suscripción evalúa el perfil de riesgo.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-8',
+    title: 'Crypto & Digital Finance',
+    description: 'Discuss crypto assets, wallets, compliance, and payments in Spanish.',
+    industry: 'finance',
+    order: 8,
+    estimatedMinutes: 65,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-8-1',
+        moduleId: 'finance-8',
+        title: 'Assets & Wallets',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 20,
+        content: {
+          dialogue: [
+            { speaker: 'PM', text: 'Integramos pagos con billeteras digitales.', translation: 'We are integrating payments with digital wallets.' }
+          ],
+          vocabulary: [
+            { id: 'fa8v1', term: 'billetera', translation: 'wallet', context: 'Crypto', example: 'El usuario vincula su billetera al perfil.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa8v2', term: 'cadena de bloques', translation: 'blockchain', context: 'Crypto', example: 'La transacción se registró en la cadena de bloques.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-8-2',
+        moduleId: 'finance-8',
+        title: 'Compliance & AML',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa8v3', term: 'KYC', translation: 'know your customer', context: 'Compliance', example: 'Completamos KYC antes de activar la cuenta.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa8v4', term: 'AML', translation: 'anti-money laundering', context: 'Compliance', example: 'La política AML está vigente.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-8-3',
+        moduleId: 'finance-8',
+        title: 'Payments & Settlement',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 25,
+        content: {
+          dialogue: [
+            { speaker: 'Ops', text: 'El settlement ocurre en T+1.', translation: 'Settlement occurs at T+1.' }
+          ],
+          vocabulary: [
+            { id: 'fa8v5', term: 'liquidación', translation: 'settlement', context: 'Payments', example: 'La liquidación se ejecuta al cierre del día.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-9',
+    title: 'Mergers & Acquisitions (M&A)',
+    description: 'Evaluate targets, negotiate terms, and execute deals in Spanish.',
+    industry: 'finance',
+    order: 9,
+    estimatedMinutes: 75,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-9-1',
+        moduleId: 'finance-9',
+        title: 'Target Evaluation & Synergies',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 25,
+        content: {
+          dialogue: [
+            { speaker: 'Corp Dev', text: 'Analicemos sinergias y valuación.', translation: 'Let’s analyze synergies and valuation.' }
+          ],
+          vocabulary: [
+            { id: 'fa9v1', term: 'sinergia', translation: 'synergy', context: 'M&A', example: 'Las sinergias operativas son significativas.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa9v2', term: 'due diligence', translation: 'due diligence', context: 'M&A', example: 'El due diligence inicia la próxima semana.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-9-2',
+        moduleId: 'finance-9',
+        title: 'Deal Structure',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa9v3', term: 'earn-out', translation: 'earn-out', context: 'M&A', example: 'Acordamos un earn-out a 2 años.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa9v4', term: 'cláusula de no competencia', translation: 'non-compete clause', context: 'M&A', example: 'Incluimos cláusula de no competencia.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-9-3',
+        moduleId: 'finance-9',
+        title: 'Integration Planning',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 30,
+        content: {
+          dialogue: [
+            { speaker: 'PMO', text: 'Planifiquemos integración de sistemas y equipos.', translation: 'Let’s plan systems and teams integration.' }
+          ],
+          vocabulary: [
+            { id: 'fa9v5', term: 'PMO', translation: 'project management office', context: 'Integration', example: 'La PMO coordina la integración.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'finance-10',
+    title: 'Regulatory & Audit Processes',
+    description: 'Prepare for external audits and ongoing regulatory processes in Spanish.',
+    industry: 'finance',
+    order: 10,
+    estimatedMinutes: 65,
+    completed: false,
+    lessons: [
+      {
+        id: 'finance-10-1',
+        moduleId: 'finance-10',
+        title: 'External Audit Readiness',
+        type: 'dialogue',
+        order: 1,
+        completed: false,
+        duration: 20,
+        content: {
+          dialogue: [
+            { speaker: 'CFO', text: 'Aseguremos evidencia y conciliaciones completas.', translation: 'Let’s ensure evidence and complete reconciliations.' }
+          ],
+          vocabulary: [
+            { id: 'fa10v1', term: 'conciliación', translation: 'reconciliation', context: 'Audit', example: 'Terminamos conciliaciones bancarias.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-10-2',
+        moduleId: 'finance-10',
+        title: 'Ongoing Regulatory Processes',
+        type: 'vocabulary',
+        order: 2,
+        completed: false,
+        duration: 20,
+        content: {
+          vocabulary: [
+            { id: 'fa10v2', term: 'reportes periódicos', translation: 'periodic reports', context: 'Regulatory', example: 'Enviamos reportes periódicos al regulador.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 },
+            { id: 'fa10v3', term: 'requerimiento', translation: 'requirement/request', context: 'Regulatory', example: 'Respondimos el requerimiento del supervisor.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      },
+      {
+        id: 'finance-10-3',
+        moduleId: 'finance-10',
+        title: 'Closing Meeting & Findings',
+        type: 'dialogue',
+        order: 3,
+        completed: false,
+        duration: 25,
+        content: {
+          dialogue: [
+            { speaker: 'Auditor', text: 'Presentamos hallazgos y recomendaciones.', translation: 'We present findings and recommendations.' }
+          ],
+          vocabulary: [
+            { id: 'fa10v4', term: 'hallazgo', translation: 'finding', context: 'Audit', example: 'Cerramos el hallazgo con acciones correctivas.', nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }
+          ]
+        }
+      }
+    ]
+  }
 ];
 

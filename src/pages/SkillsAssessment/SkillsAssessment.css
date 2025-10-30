@@ -510,6 +510,9 @@ h2 {
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
+  max-height: 360px; /* keep card height consistent */
+  overflow-y: auto;  /* allow scrolling for additional industries */
+  padding-right: 4px; /* avoid scrollbar overlay on content */
 }
 
 .industry-card {

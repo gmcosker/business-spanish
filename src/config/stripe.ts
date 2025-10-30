@@ -35,7 +35,10 @@ export const PRICING_PLANS = {
   professional: {
     name: 'Professional',
     price: 29,
-    stripePriceId: 'price_...', // TODO: Get from Stripe Dashboard
+    // Monthly price (test) provided by user
+    stripePriceId: 'price_1SO29JRw1nAB2RQriiyEWOKB',
+    // If you want to offer yearly in UI later, use:
+    // yearlyStripePriceId: 'price_1SO2BuRw1nAB2RQroyWgMeNr',
     interval: 'month',
     features: [
       'Access to ALL industry paths',
@@ -56,7 +59,7 @@ export const PRICING_PLANS = {
   team: {
     name: 'Team',
     price: 99,
-    stripePriceId: 'price_...', // TODO: Get from Stripe Dashboard
+    stripePriceId: 'price_...', // TODO: Set when team plan is ready
     interval: 'month',
     features: [
       'Everything in Professional',

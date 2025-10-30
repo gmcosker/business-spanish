@@ -137,8 +137,10 @@ function ScenarioSelector({ scenarios, onSelect }: { scenarios: any[], onSelect:
               tech: '💻',
               finance: '💰',
               logistics: '📦',
-              'customer-service': '🎧'
-            };
+              'customer-service': '🎧',
+              architecture: '🏗️',
+              healthcare: '🏥'
+            } as const;
 
             return (
               <button

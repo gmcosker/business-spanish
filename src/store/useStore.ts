@@ -22,10 +22,10 @@ interface AppState {
   setFirebaseUser: (firebaseUser: any) => void;
   setModules: (modules: Module[]) => void;
   setAllModules: (industry: string, modules: Module[]) => void;
-  setCurrentIndustry: (industry: string) => void;
+  setCurrentIndustry: (industry: string) => Promise<void>;
   setProgress: (progress: UserProgress) => void;
   updateOnboarding: (data: Partial<OnboardingData>) => void;
-  completeOnboarding: () => void;
+  completeOnboarding: () => Promise<void>;
   completeLesson: (lessonId: string) => Promise<void>;
   completeModule: (moduleId: string) => Promise<void>;
   addVocabularyItem: (item: VocabularyItem) => void;
@@ -71,11 +71,45 @@ export const useStore = create<AppState>()(
           modules: state.currentIndustry === industry ? modules : state.modules,
         })),
       
-      setCurrentIndustry: (industry) => 
-        set((state) => {
-          const industryModules = state.allModules[industry] || [];
-          return { currentIndustry: industry, modules: industryModules };
-        }),
+      setCurrentIndustry: async (industry) => {
+        const state = get();
+        let industryModules = state.allModules[industry];
+        
+        // Lazy-load modules if not loaded yet
+        if (!industryModules || industryModules.length === 0) {
+          try {
+            if (industry === 'tech') {
+              const { techModules } = await import('../data/sampleModules');
+              industryModules = techModules;
+            } else if (industry === 'finance') {
+              const { financeModules } = await import('../data/financeModules');
+              industryModules = financeModules;
+            } else if (industry === 'logistics') {
+              const { logisticsModules } = await import('../data/logisticsModules');
+              industryModules = logisticsModules;
+            } else if (industry === 'customer-service') {
+              const { customerServiceModules } = await import('../data/customerServiceModules');
+              industryModules = customerServiceModules;
+            } else if (industry === 'architecture') {
+              const { architectureModules } = await import('../data/architectureModules');
+              industryModules = architectureModules;
+            } else if (industry === 'healthcare') {
+              const { healthcareModules } = await import('../data/healthcareModules');
+              industryModules = healthcareModules;
+            }
+            if (industryModules) {
+              set((s) => ({
+                allModules: { ...s.allModules, [industry]: industryModules! },
+              }));
+            }
+          } catch (e) {
+            console.error('Error loading modules for industry:', industry, e);
+          }
+        }
+        
+        // Set current industry and active modules
+        set({ currentIndustry: industry, modules: industryModules || [] });
+      },
       
       setProgress: (progress) => set({ progress }),
       
@@ -85,23 +119,11 @@ export const useStore = create<AppState>()(
         })),
       
       completeOnboarding: async () => {
-        const { onboardingData, firebaseUser, setAllModules, setCurrentIndustry } = get();
+        const { onboardingData, firebaseUser, setCurrentIndustry } = get();
         
-        // Load all industry modules
-        const { techModules } = await import('../data/sampleModules');
-        const { financeModules } = await import('../data/financeModules');
-        const { logisticsModules } = await import('../data/logisticsModules');
-        const { customerServiceModules } = await import('../data/customerServiceModules');
-        
-        // Store all modules by industry
-        setAllModules('tech', techModules);
-        setAllModules('finance', financeModules);
-        setAllModules('logistics', logisticsModules);
-        setAllModules('customer-service', customerServiceModules);
-        
-        // Set the initial industry based on user selection
+        // Lazy-load only the initial industry
         const initialIndustry = onboardingData.industry || 'tech';
-        setCurrentIndustry(initialIndustry);
+        await setCurrentIndustry(initialIndustry);
         
         const user: User = {
           id: firebaseUser?.uid || Date.now().toString(),
@@ -343,6 +365,8 @@ export const useStore = create<AppState>()(
         try {
           const progress = await getUserProgress(firebaseUser.uid);
           if (progress) {
+            // User has progress = onboarding is complete
+            set({ isOnboarding: false });
             // Only backfill if modules are loaded
             if (Object.keys(allModules).length > 0) {
               // Backfill completed modules based on completed lessons

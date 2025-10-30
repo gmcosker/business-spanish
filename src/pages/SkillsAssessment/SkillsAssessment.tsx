@@ -786,6 +786,18 @@ const industries = [
     name: 'Customer Service',
     icon: '🤝',
     description: 'Support, sales, client relations'
+  },
+  {
+    id: 'architecture',
+    name: 'Architecture & Construction',
+    icon: '🏗️',
+    description: 'Drawings, RFIs, field coordination'
+  },
+  {
+    id: 'healthcare',
+    name: 'Healthcare & Medical Admin',
+    icon: '🏥',
+    description: 'Patient intake, triage, care instructions'
   }
 ];
 

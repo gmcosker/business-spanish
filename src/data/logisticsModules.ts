@@ -479,5 +479,131 @@ export const logisticsModules: Module[] = [
       },
     ],
   },
+  {
+    id: 'logistics-2',
+    title: 'Warehouse Operations & Inventory',
+    description: 'Run receiving, picking, cycle counts, and inventory controls in Spanish.',
+    industry: 'logistics',
+    order: 2,
+    estimatedMinutes: 65,
+    completed: false,
+    lessons: [
+      { id: 'logistics-2-1', moduleId: 'logistics-2', title: 'Receiving & Putaway', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Supervisor', text: 'Hoy recibimos 4 pallets. Organicemos el putaway por pasillo 3.', translation: 'Today we receive 4 pallets. Let’s do putaway in aisle 3.' } ], vocabulary: [ { id: 'l2v1', term: 'putaway', translation: 'putaway', context: 'Warehouse', example: 'Hacemos putaway según ubicación.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }, { id: 'l2v2', term: 'pallet', translation: 'pallet', context: 'Warehouse', example: 'Hay 4 pallets en recepción.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-2-2', moduleId: 'logistics-2', title: 'Picking & Packing', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Picker', text: 'Completo el picking por ola y luego packing.', translation: 'I complete wave picking and then packing.' } ], vocabulary: [ { id: 'l2v3', term: 'picking por ola', translation: 'wave picking', context: 'Warehouse', example: 'El picking por ola optimiza recorridos.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }, { id: 'l2v4', term: 'packing', translation: 'packing', context: 'Warehouse', example: 'Hacemos packing con verificación doble.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-2-3', moduleId: 'logistics-2', title: 'Cycle Counts & Accuracy', type: 'vocabulary', order: 3, completed: false, duration: 25, content: { vocabulary: [ { id: 'l2v5', term: 'conteo cíclico', translation: 'cycle count', context: 'Inventory', example: 'Hacemos conteo cíclico semanal.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }, { id: 'l2v6', term: 'exactitud de inventario', translation: 'inventory accuracy', context: 'Inventory', example: 'La exactitud de inventario es 98%.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-3',
+    title: 'Transportation & Shipping',
+    description: 'Plan routes, manage carriers, and handle documentation in Spanish.',
+    industry: 'logistics',
+    order: 3,
+    estimatedMinutes: 65,
+    completed: false,
+    lessons: [
+      { id: 'logistics-3-1', moduleId: 'logistics-3', title: 'Route Planning', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Planner', text: 'Optimicemos rutas para reducir kilómetros vacíos.', translation: 'Let’s optimize routes to reduce empty miles.' } ], vocabulary: [ { id: 'l3v1', term: 'transportista', translation: 'carrier', context: 'Transport', example: 'Seleccionamos transportista con mejor SLA.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-3-2', moduleId: 'logistics-3', title: 'Freight & Incoterms', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'l3v2', term: 'flete', translation: 'freight', context: 'Transport', example: 'Negociamos el flete con el proveedor.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }, { id: 'l3v3', term: 'Incoterms', translation: 'Incoterms', context: 'International trade', example: 'Definimos Incoterms en el contrato.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-3-3', moduleId: 'logistics-3', title: 'Shipping Docs', type: 'dialogue', order: 3, completed: false, duration: 25, content: { dialogue: [ { speaker: 'Coordinator', text: 'Emitimos B/L y factura comercial.', translation: 'We issue the B/L and commercial invoice.' } ], vocabulary: [ { id: 'l3v4', term: 'B/L (conocimiento de embarque)', translation: 'bill of lading', context: 'Shipping', example: 'El B/L fue liberado en origen.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-4',
+    title: 'Supplier Relations & Negotiations',
+    description: 'Source, negotiate, and manage performance in Spanish.',
+    industry: 'logistics',
+    order: 4,
+    estimatedMinutes: 60,
+    completed: false,
+    lessons: [
+      { id: 'logistics-4-1', moduleId: 'logistics-4', title: 'RFP & Quotes', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Buyer', text: 'Lanzamos RFP y comparamos cotizaciones.', translation: 'We launch an RFP and compare quotes.' } ], vocabulary: [ { id: 'l4v1', term: 'cotización', translation: 'quote/bid', context: 'Sourcing', example: 'Recibimos tres cotizaciones.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-4-2', moduleId: 'logistics-4', title: 'Negotiation', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Supplier', text: 'Podemos mejorar precio con mayor volumen.', translation: 'We can improve price with higher volume.' } ], vocabulary: [ { id: 'l4v2', term: 'términos', translation: 'terms', context: 'Negotiation', example: 'Definimos términos claros.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-4-3', moduleId: 'logistics-4', title: 'Performance & KPIs', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'l4v3', term: 'OTIF', translation: 'on time in full', context: 'Logistics KPI', example: 'El OTIF subió a 95%.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 }, { id: 'l4v4', term: 'lead time', translation: 'lead time', context: 'Supply chain', example: 'Reducimos lead time en 2 días.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-5',
+    title: 'Supply Chain Analytics',
+    description: 'Forecast, safety stock, and dashboarding in Spanish.',
+    industry: 'logistics',
+    order: 5,
+    estimatedMinutes: 60,
+    completed: false,
+    lessons: [
+      { id: 'logistics-5-1', moduleId: 'logistics-5', title: 'Forecasting', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Planner', text: 'Actualizamos pronósticos con datos históricos.', translation: 'We update forecasts with historical data.' } ], vocabulary: [ { id: 'l5v1', term: 'pronóstico', translation: 'forecast', context: 'Planning', example: 'El pronóstico indica alta demanda.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-5-2', moduleId: 'logistics-5', title: 'Safety Stock', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'l5v2', term: 'stock de seguridad', translation: 'safety stock', context: 'Inventory', example: 'Aumentamos stock de seguridad por variabilidad.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-5-3', moduleId: 'logistics-5', title: 'Dashboards', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'l5v3', term: 'tablero', translation: 'dashboard', context: 'Analytics', example: 'El tablero muestra KPIs diarios.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-6',
+    title: 'E-commerce Fulfillment',
+    description: 'SLAs, returns, and carrier integrations in Spanish.',
+    industry: 'logistics',
+    order: 6,
+    estimatedMinutes: 60,
+    completed: false,
+    lessons: [
+      { id: 'logistics-6-1', moduleId: 'logistics-6', title: 'SLAs & Cutoffs', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Ops Lead', text: 'El cutoff de hoy es 5pm para P1.', translation: 'Today’s cutoff is 5pm for P1.' } ], vocabulary: [ { id: 'l6v1', term: 'cutoff', translation: 'cutoff (deadline)', context: 'Operations', example: 'El cutoff de recolección es 4pm.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-6-2', moduleId: 'logistics-6', title: 'Returns (RMA)', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'l6v2', term: 'devolución', translation: 'return', context: 'E-commerce', example: 'Procesamos la devolución con etiqueta RMA.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-6-3', moduleId: 'logistics-6', title: 'Carrier Integration', type: 'dialogue', order: 3, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Engineer', text: 'Integramos API de paquetería para etiquetas.', translation: 'We integrate parcel API for labels.' } ], vocabulary: [ { id: 'l6v3', term: 'paquetería', translation: 'parcel carrier', context: 'Shipping', example: 'La paquetería recoge dos veces al día.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-7',
+    title: 'Cold Chain & Perishables',
+    description: 'Temperature control, monitoring, and compliance in Spanish.',
+    industry: 'logistics',
+    order: 7,
+    estimatedMinutes: 60,
+    completed: false,
+    lessons: [
+      { id: 'logistics-7-1', moduleId: 'logistics-7', title: 'Temperature Logs', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'QC', text: 'Verificamos registros de temperatura por tramo.', translation: 'We verify temperature logs by leg.' } ], vocabulary: [ { id: 'l7v1', term: 'cadena de frío', translation: 'cold chain', context: 'Perishables', example: 'La cadena de frío no se interrumpió.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-7-2', moduleId: 'logistics-7', title: 'Thermal Packaging', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'l7v2', term: 'embalaje térmico', translation: 'thermal packaging', context: 'Perishables', example: 'Usamos embalaje térmico validado.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-7-3', moduleId: 'logistics-7', title: 'GDP/GMP Compliance', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'l7v3', term: 'GDP', translation: 'good distribution practices', context: 'Compliance', example: 'Seguimos GDP en distribución farmacéutica.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-8',
+    title: 'Last-Mile Delivery',
+    description: 'Dispatch, proof of delivery, and customer communication in Spanish.',
+    industry: 'logistics',
+    order: 8,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'logistics-8-1', moduleId: 'logistics-8', title: 'Dispatch & Tracking', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Dispatcher', text: 'Despachamos rutas y compartimos tracking.', translation: 'We dispatch routes and share tracking.' } ], vocabulary: [ { id: 'l8v1', term: 'prueba de entrega', translation: 'proof of delivery (POD)', context: 'Delivery', example: 'Subimos POD al sistema.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-8-2', moduleId: 'logistics-8', title: 'Customer Communication', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'l8v2', term: 'ventana de entrega', translation: 'delivery window', context: 'Delivery', example: 'Confirmamos ventana de entrega con el cliente.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-8-3', moduleId: 'logistics-8', title: 'Exceptions & Reattempts', type: 'dialogue', order: 3, completed: false, duration: 15, content: { dialogue: [ { speaker: 'Courier', text: 'Hicimos reintento por ausencia del cliente.', translation: 'We made a reattempt due to recipient absence.' } ], vocabulary: [ { id: 'l8v3', term: 'reintento', translation: 'reattempt', context: 'Delivery', example: 'Programamos reintento al día siguiente.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-9',
+    title: 'Procurement & Vendor Management',
+    description: 'Purchase orders, contracts, and supplier scorecards in Spanish.',
+    industry: 'logistics',
+    order: 9,
+    estimatedMinutes: 60,
+    completed: false,
+    lessons: [
+      { id: 'logistics-9-1', moduleId: 'logistics-9', title: 'Purchase Orders', type: 'dialogue', order: 1, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Buyer', text: 'Emitimos OC y confirmamos fecha de entrega.', translation: 'We issue POs and confirm delivery date.' } ], vocabulary: [ { id: 'l9v1', term: 'orden de compra (OC)', translation: 'purchase order (PO)', context: 'Procurement', example: 'La OC incluye condiciones de pago.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-9-2', moduleId: 'logistics-9', title: 'Contracts', type: 'vocabulary', order: 2, completed: false, duration: 20, content: { vocabulary: [ { id: 'l9v2', term: 'anexo', translation: 'addendum', context: 'Contracts', example: 'Firmamos un anexo al contrato.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-9-3', moduleId: 'logistics-9', title: 'Scorecards', type: 'vocabulary', order: 3, completed: false, duration: 20, content: { vocabulary: [ { id: 'l9v3', term: 'scorecard', translation: 'scorecard', context: 'Vendors', example: 'El scorecard evalúa OTIF y calidad.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  },
+  {
+    id: 'logistics-10',
+    title: 'Sustainability & Green Logistics',
+    description: 'Emissions tracking, modal shift, and packaging reduction in Spanish.',
+    industry: 'logistics',
+    order: 10,
+    estimatedMinutes: 55,
+    completed: false,
+    lessons: [
+      { id: 'logistics-10-1', moduleId: 'logistics-10', title: 'Emissions Tracking', type: 'vocabulary', order: 1, completed: false, duration: 20, content: { vocabulary: [ { id: 'l10v1', term: 'huella de carbono', translation: 'carbon footprint', context: 'Sustainability', example: 'Calculamos huella de carbono por envío.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-10-2', moduleId: 'logistics-10', title: 'Modal Shift', type: 'dialogue', order: 2, completed: false, duration: 20, content: { dialogue: [ { speaker: 'Planner', text: 'Evaluamos cambio modal a ferrocarril.', translation: 'We evaluate modal shift to rail.' } ], vocabulary: [ { id: 'l10v2', term: 'cambio modal', translation: 'modal shift', context: 'Transport', example: 'El cambio modal reduce emisiones.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } },
+      { id: 'logistics-10-3', moduleId: 'logistics-10', title: 'Packaging Reduction', type: 'vocabulary', order: 3, completed: false, duration: 15, content: { vocabulary: [ { id: 'l10v3', term: 'reducción de embalaje', translation: 'packaging reduction', context: 'Sustainability', example: 'Reducimos embalaje sin afectar protección.' , nextReview: new Date(Date.now()+86400000).toISOString(), interval: 1, easeFactor: 2.5, repetitions: 0 } ] } }
+    ]
+  }
 ];
 

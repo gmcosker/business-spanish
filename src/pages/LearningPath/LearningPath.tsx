@@ -39,7 +39,9 @@ export default function LearningPath() {
     'finance': { name: 'Finance & Banking', modules: allModules['finance'] || [], color: 'green' },
     'logistics': { name: 'Logistics & Supply Chain', modules: allModules['logistics'] || [], color: 'blue' },
     'customer-service': { name: 'Customer Service', modules: allModules['customer-service'] || [], color: 'orange' },
-  };
+    'architecture': { name: 'Architecture & Construction', modules: allModules['architecture'] || [], color: 'amber' },
+    'healthcare': { name: 'Healthcare & Medical Admin', modules: allModules['healthcare'] || [], color: 'rose' },
+  } as const;
 
   const canSwitchIndustries = hasFeatureAccess(user?.subscriptionTier, 'multipleIndustries');
   const hasUsedFirstIndustry = !!currentIndustry;
