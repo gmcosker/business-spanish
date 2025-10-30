@@ -8,11 +8,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    console.log('Stripe checkout session request received');
     const { tier = 'professional', email, priceId } = req.body || {};
 
     // Prefer explicit priceId from client when provided (e.g., yearly),
@@ -20,7 +30,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const resolvedPriceId = priceId || process.env.STRIPE_PRICE_PROFESSIONAL_MONTHLY;
 
     if (!resolvedPriceId) {
+      console.error('Missing priceId - env:', process.env.STRIPE_PRICE_PROFESSIONAL_MONTHLY);
       return res.status(400).json({ error: 'Missing priceId configuration' });
+    }
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('Missing STRIPE_SECRET_KEY environment variable');
+      return res.status(500).json({ error: 'Stripe secret key not configured' });
     }
 
     // Get origin from headers or use environment variable
