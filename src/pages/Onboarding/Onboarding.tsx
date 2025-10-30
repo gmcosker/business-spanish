@@ -5,6 +5,7 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import type { LanguageLevel, Industry } from '../../types';
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   const { onboardingData, updateOnboarding, completeOnboarding, setModules, setAllModules, setCurrentIndustry } = useStore();
   const [step, setStep] = useState(onboardingData.step);
 
