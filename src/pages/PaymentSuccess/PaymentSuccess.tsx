@@ -21,16 +21,21 @@ export default function PaymentSuccess() {
       }
 
       try {
-        // TODO: Verify the session with your backend
-        // For now, we'll just show success
-        // In production, call your backend API to verify the session
-        console.log('Session ID:', sessionId);
+        // Verify the session with Stripe via backend
+        const verifyResponse = await fetch(`/api/verify-session?sessionId=${sessionId}`);
+        
+        if (!verifyResponse.ok) {
+          const errorData = await verifyResponse.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to verify payment session');
+        }
 
-        // Determine the subscription tier from the session
-        // TODO: Get actual tier from backend verification
-        const tier: SubscriptionTier = 'professional'; // Mock value
+        const { tier, verified, payment_status } = await verifyResponse.json();
 
-        // Update subscription in Firestore
+        if (!verified || payment_status !== 'paid') {
+          throw new Error('Payment verification failed');
+        }
+
+        // Update subscription in Firestore with verified tier
         await updateUserSubscription(firebaseUser.uid, tier);
 
         // Update local user data
@@ -47,7 +52,7 @@ export default function PaymentSuccess() {
         setTimeout(() => {
           navigate('/');
         }, 2000);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error handling payment success:', error);
         setStatus('error');
       }
