@@ -6,13 +6,8 @@ import type { SubscriptionTier } from '../types';
  * Note: This requires a backend API endpoint to create the checkout session
  * TODO: Create a backend API at /api/create-checkout-session
  */
-export async function createCheckoutSession(tier: SubscriptionTier, email?: string): Promise<{ error?: Error; sessionId?: string }> {
+export async function createCheckoutSession(tier: SubscriptionTier, email?: string): Promise<{ error?: Error; sessionId?: string; url?: string }> {
   try {
-    // For development, we'll use a mock implementation
-    // In production, this should call your backend API
-    console.warn('⚠️ Stripe checkout requires a backend API. Implement /api/create-checkout-session');
-    
-    // TODO: Replace with actual API call
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: {
@@ -25,12 +20,14 @@ export async function createCheckoutSession(tier: SubscriptionTier, email?: stri
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API error response:', errorText);
       throw new Error('Failed to create checkout session');
     }
 
-    const { sessionId } = await response.json();
+    const { sessionId, url } = await response.json();
     
-    return { sessionId };
+    return { sessionId, url };
   } catch (error: any) {
     console.error('Error creating checkout session:', error);
     return { error: new Error(error.message || 'Failed to create checkout session') };
@@ -39,23 +36,23 @@ export async function createCheckoutSession(tier: SubscriptionTier, email?: stri
 
 /**
  * Redirect to Stripe Checkout
+ * Uses session URL directly instead of deprecated redirectToCheckout method
  */
-export async function redirectToCheckout(sessionId: string): Promise<void> {
+export async function redirectToCheckout(sessionId: string, checkoutUrl?: string): Promise<void> {
   try {
-    const stripe = await getStripe();
-    if (!stripe) {
-      throw new Error('Stripe not initialized');
+    // If URL provided, use it directly (from createCheckoutSession response)
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+      return;
     }
 
-    // @ts-ignore - Stripe.js methods
-    const { error } = await stripe.redirectToCheckout({ sessionId });
-    
-    if (error) {
-      throw new Error(error.message);
-    }
+    // Fallback: construct Stripe Checkout URL manually
+    // Format: https://checkout.stripe.com/c/pay/{sessionId}
+    window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
   } catch (error: any) {
     console.error('Error redirecting to checkout:', error);
-    throw new Error(error.message || 'Failed to redirect to checkout');
+    // Final fallback
+    window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
   }
 }
 
@@ -65,14 +62,14 @@ export async function redirectToCheckout(sessionId: string): Promise<void> {
 export async function subscribeToPlan(tier: SubscriptionTier, email?: string): Promise<void> {
   try {
     // Create checkout session
-    const { sessionId, error } = await createCheckoutSession(tier, email);
+    const { sessionId, url, error } = await createCheckoutSession(tier, email);
     
     if (error || !sessionId) {
       throw error || new Error('Failed to get session ID');
     }
 
-    // Redirect to checkout
-    await redirectToCheckout(sessionId);
+    // Redirect to checkout using the URL from the session
+    await redirectToCheckout(sessionId, url);
   } catch (error: any) {
     console.error('Error subscribing to plan:', error);
     throw new Error(error.message || 'Failed to subscribe');

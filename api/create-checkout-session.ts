@@ -54,7 +54,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       allow_promotion_codes: true,
     });
 
-    return res.status(200).json({ sessionId: session.id });
+    // Return both sessionId and url for compatibility
+    return res.status(200).json({ 
+      sessionId: session.id,
+      url: session.url 
+    });
   } catch (err: any) {
     console.error('Stripe checkout error:', err);
     return res.status(500).json({ error: err.message || 'Internal Server Error' });

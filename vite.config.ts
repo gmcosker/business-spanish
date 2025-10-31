@@ -7,11 +7,5 @@ export default defineConfig({
   server: {
     port: 4200,
   },
-  build: {
-    rollupOptions: {
-      external: ['api/**'], // Exclude API routes from Vite build
-    },
-  },
-  publicDir: false, // Don't copy public files that might interfere
 })
 
