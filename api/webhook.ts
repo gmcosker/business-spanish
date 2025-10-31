@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-const Stripe = require('stripe');
+import Stripe from 'stripe';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
