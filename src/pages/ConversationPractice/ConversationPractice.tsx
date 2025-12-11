@@ -6,78 +6,7 @@ import { conversationScenarios, type ConversationScenario } from '../../data/con
 import { useStore } from '../../store/useStore';
 import { hasFeatureAccess, getUpgradeUrl, getFeatureLimitMessage } from '../../utils/subscription';
 
-// AudioController component for managing play/pause/resume
-function AudioController({ text }: { text: string }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const handleToggle = () => {
-    if (!isPlaying && !isPaused) {
-      // Start playing
-      const voices = window.speechSynthesis.getVoices();
-      let spanishVoice = voices.find(v => v.lang === 'es-ES' && v.name.toLowerCase().includes('sarah')) ||
-                         voices.find(v => v.lang === 'es-ES') ||
-                         voices.find(v => v.lang === 'es-MX') ||
-                         voices.find(v => v.lang === 'es-US') ||
-                         voices.find(v => v.lang.startsWith('es-'));
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      
-      if (spanishVoice) {
-        utterance.voice = spanishVoice;
-        utterance.lang = spanishVoice.lang;
-      } else {
-        utterance.lang = 'es-ES';
-      }
-      
-      utterance.rate = 0.85;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
-      
-      utterance.onend = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-      };
-      
-      utterance.onerror = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-      };
-      
-      window.speechSynthesis.speak(utterance);
-      setIsPlaying(true);
-      setIsPaused(false);
-    } else if (isPlaying && !isPaused) {
-      // Pause
-      window.speechSynthesis.pause();
-      setIsPaused(true);
-    } else if (isPaused) {
-      // Resume
-      window.speechSynthesis.resume();
-      setIsPaused(false);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleToggle}
-      className={`text-gray-400 transition-colors ${
-        isPlaying ? 'text-primary-600' : 'hover:text-primary-600'
-      }`}
-      title={
-        isPlaying && !isPaused ? 'Pause audio' :
-        isPaused ? 'Resume audio' :
-        'Play audio'
-      }
-    >
-      {isPlaying && !isPaused ? (
-        <Pause className="w-5 h-5" />
-      ) : (
-        <Volume2 className="w-5 h-5" />
-      )}
-    </button>
-  );
-}
+import AudioController from '../../components/AudioController/AudioController';
 
 function ScenarioSelector({ scenarios, onSelect }: { scenarios: any[], onSelect: (scenario: any) => void }) {
   return (
@@ -416,9 +345,9 @@ function ConversationWindow({ scenario }: { scenario: ConversationScenario }) {
                     )}
                     
                     {feedback.pronunciationTips && (
-                      <div className="bg-purple-50 border border-purple-200 rounded p-2">
-                        <p className="text-xs font-medium text-purple-900 mb-1">🔊 Pronunciación:</p>
-                        <p className="text-xs text-purple-800 ml-2">• {feedback.pronunciationTips}</p>
+                      <div className="bg-sky-50 border border-sky-200 rounded p-2">
+                        <p className="text-xs font-medium text-sky-900 mb-1">🔊 Pronunciación:</p>
+                        <p className="text-xs text-sky-800 ml-2">• {feedback.pronunciationTips}</p>
                       </div>
                     )}
                   </div>
@@ -456,15 +385,15 @@ function ConversationWindow({ scenario }: { scenario: ConversationScenario }) {
               onMouseUp={stopRecording}
               onTouchStart={startRecording}
               onTouchEnd={stopRecording}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors flex-shrink-0 ${
+              className={`flex items-center justify-center gap-2 px-6 py-4 rounded-lg transition-colors flex-shrink-0 touch-target min-w-[120px] ${
                 isListening 
                   ? 'bg-red-600 text-white animate-pulse' 
-                  : 'bg-primary-600 text-white hover:bg-primary-700'
+                  : 'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800'
               }`}
               disabled={isWaitingForResponse}
             >
-              <Mic className="w-5 h-5" />
-              {isListening ? 'Recording...' : 'Hold to Speak'}
+              <Mic className="w-5 h-5 md:w-4 md:h-4" />
+              <span className="text-sm md:text-base">{isListening ? 'Recording...' : 'Hold to Speak'}</span>
             </button>
             <div className="flex-1 min-w-0">
               {transcript ? (

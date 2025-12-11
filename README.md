@@ -1,4 +1,4 @@
-# Business Spanish Pro
+# Avance
 
 A professional Spanish language learning platform designed specifically for working professionals and entrepreneurs seeking fluency in Spanish for real-world business communication across Latin America.
 
@@ -8,11 +8,13 @@ A professional Spanish language learning platform designed specifically for work
 
 #### Core Learning Experience
 - **Onboarding Flow**: Personalized 4-step onboarding with language placement, industry selection, and goal setting
-- **4 Industry-Specific Learning Paths**:
+- **6 Industry-Specific Learning Paths**:
   - Tech/Startups (3 modules, 10+ lessons)
   - Finance & Banking (2 modules, 5+ lessons)
   - Logistics & Operations (1 module, 3+ lessons)
   - Customer Service (1 module, 3+ lessons)
+  - Architecture & Construction (10 modules)
+  - Healthcare & Medical Admin (10 modules)
 - **Interactive Lessons**: Video lessons, dialogues, vocabulary cards, and practice exercises
 - **Speech Recognition**: Real-time pronunciation practice with Web Speech API
 - **SRS-Based Vocabulary Builder**: Spaced repetition system with flashcards and quiz mode
@@ -170,6 +172,28 @@ src/
    - Handling complaints
    - Phone etiquette
 
+### Architecture & Construction (10 Modules)
+1. **Project Kickoff & Scope** - Define scope, deliverables, and milestones
+2. **Construction Drawings & RFIs** - Manage drawings, revisions, and RFIs
+3. **Field Coordination & Site Safety** - Coordinate trades and site walks
+4. **Estimating & Procurement** - Estimates, bids, and purchase orders
+5. **Client Presentations & Approvals** - Design options and value engineering
+6. **MEP Coordination & BIM** - BIM coordination and clash detection
+7. **Permitting & Codes** - Navigate permits and code compliance
+8. And more...
+
+### Healthcare & Medical Admin (10 Modules)
+1. **Patient Intake & Triage** - Collect patient info and consent
+2. **Clinical Interview & Examination** - HPI, ROS, and exam instructions
+3. **Treatment & Patient Education** - Medications and care plans
+4. **Pediatrics & Family Communication** - Child care with parents
+5. **Emergency & Urgent Care** - Triage levels and red-flag symptoms
+6. **Chronic Disease Management** - Diabetes, hypertension counseling
+7. **Women's Health** - OB/GYN visits and prenatal care
+8. **Palliative Care & Difficult Conversations** - Goals of care discussions
+9. **Clinic & Hospital Admin** - Scheduling, referrals, prior auth
+10. **Community & Preventive Care** - Health promotion and screening
+
 ## Features Completed (Phase 2)
 
 ✅ Speech recognition pronunciation practice  
@@ -177,6 +201,8 @@ src/
 ✅ Finance industry learning path (2 modules)  
 ✅ Logistics industry learning path (1 module)  
 ✅ Customer Service industry learning path (1 module)  
+✅ Architecture & Construction learning path (10 modules)  
+✅ Healthcare & Medical Admin learning path (10 modules)  
 ✅ Global search functionality  
 ✅ Advanced analytics dashboard with charts and projections  
 
@@ -214,5 +240,5 @@ Private project - All rights reserved
 
 ## Contact
 
-For questions or feedback about Business Spanish Pro, please contact the development team.
+For questions or feedback about Avance, please contact the development team.
 

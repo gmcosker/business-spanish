@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Loader } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { updateUserSubscription } from '../../services/auth';
+import { analytics } from '../../services/analytics';
+import { PRICING_PLANS } from '../../config/stripe';
 import type { SubscriptionTier } from '../../types';
 
 export default function PaymentSuccess() {
@@ -44,6 +46,12 @@ export default function PaymentSuccess() {
             ...user,
             subscriptionTier: tier,
           });
+        }
+
+        // Track purchase event
+        const plan = PRICING_PLANS[tier as keyof typeof PRICING_PLANS];
+        if (plan && plan.price) {
+          analytics.purchase(tier, plan.price, sessionId);
         }
 
         setStatus('success');

@@ -1,17 +1,33 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { signIn, signUp, resetPassword, signInWithGoogle } from '../../services/auth';
+import { analytics } from '../../services/analytics';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { usePageSEO } from '../../hooks/usePageSEO';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const location = useLocation();
+  const isSignupRoute = location.pathname === '/signup';
+  const [isSignUp, setIsSignUp] = useState(isSignupRoute);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+
+  useEffect(() => {
+    setIsSignUp(isSignupRoute);
+  }, [isSignupRoute]);
+
+  usePageSEO({
+    title: isSignUp ? 'Create Your Avance Account' : 'Log In to Avance',
+    description: isSignUp
+      ? 'Create your Avance account to unlock business Spanish courses tailored to your industry and role.'
+      : 'Log in to Avance to continue mastering business Spanish with personalized lessons and analytics.',
+    canonicalPath: location.pathname,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,8 +37,10 @@ export default function Login() {
     try {
       if (isSignUp) {
         await signUp(email, password, displayName);
+        analytics.signup('email');
       } else {
         await signIn(email, password);
+        analytics.login('email');
       }
       navigate('/');
     } catch (err: any) {
@@ -51,7 +69,14 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await signInWithGoogle();
+      const userData = await signInWithGoogle();
+      // Check if this is a new user (createdAt matches lastActiveAt suggests new)
+      const isNewUser = userData.createdAt === userData.lastActiveAt;
+      if (isNewUser) {
+        analytics.signup('google');
+      } else {
+        analytics.login('google');
+      }
       navigate('/');
     } catch (err: any) {
       setError(err.message || 'Failed to sign in with Google');
@@ -70,7 +95,7 @@ export default function Login() {
           <p className="mt-2 text-center text-sm text-gray-600">
             {isSignUp
               ? 'Start your Spanish learning journey today'
-              : 'Welcome back to Business Spanish Pro'}
+              : 'Welcome back to Avance'}
           </p>
         </div>
 

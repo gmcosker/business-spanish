@@ -18,6 +18,13 @@ import Pricing from './pages/Pricing/Pricing';
 import PaymentSuccess from './pages/PaymentSuccess/PaymentSuccess';
 import Landing from './pages/Landing/Landing';
 import SkillsAssessment from './pages/SkillsAssessment/SkillsAssessment';
+import Privacy from './pages/Privacy/Privacy';
+import Terms from './pages/Terms/Terms';
+import NotFound from './pages/NotFound/NotFound';
+import BusinessSpanishGuide2026 from './pages/Blog/BusinessSpanishGuide2026';
+import SpanishInHealthcare from './pages/Blog/SpanishInHealthcare';
+import GoogleAnalytics from './components/GoogleAnalytics/GoogleAnalytics';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { onAuthChange } from './services/auth';
 import { getCurrentUserData } from './services/auth';
 
@@ -41,9 +48,10 @@ function App() {
             id: userData.uid,
             name: userData.displayName,
             email: userData.email,
-            industry: 'tech', // TODO: Get from Firestore
-            level: 'intermediate', // TODO: Get from Firestore
-            goal: '',
+            industry: (userData.industry as any) || 'tech',
+            level: (userData.level as any) || 'intermediate',
+            goal: userData.goal || '',
+            targetDate: userData.targetDate,
             createdAt: userData.createdAt,
             subscriptionTier: userData.subscriptionTier,
           });
@@ -88,82 +96,99 @@ function App() {
   // Show login if not authenticated
   if (!firebaseUser) {
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/landing" element={<Landing />} />
-          <Route path="/home" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Login />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/assessment" element={<SkillsAssessment />} />
-          <Route path="/payment-success" element={<Navigate to="/login" replace />} />
-          <Route path="/" element={<Navigate to="/landing" replace />} />
-          <Route path="*" element={<Navigate to="/landing" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <GoogleAnalytics />
+          <Routes>
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/home" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Login />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/assessment" element={<SkillsAssessment />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/blog/business-spanish-guide-2026" element={<BusinessSpanishGuide2026 />} />
+            <Route path="/blog/spanish-in-healthcare" element={<SpanishInHealthcare />} />
+            <Route path="/payment-success" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<Navigate to="/landing" replace />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
     );
   }
 
   // Show onboarding if user hasn't completed it yet
   if (isOnboarding) {
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/assessment" element={<SkillsAssessment />} />
-          <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/" element={<Navigate to="/onboarding" replace />} />
-          <Route path="*" element={<Navigate to="/onboarding" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <GoogleAnalytics />
+          <Routes>
+            <Route path="/assessment" element={<SkillsAssessment />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/" element={<Navigate to="/onboarding" replace />} />
+            <Route path="*" element={<Navigate to="/onboarding" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
     );
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public landing page */}
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/home" element={<Landing />} />
-        
-        {/* Skills Assessment */}
-        <Route path="/assessment" element={<SkillsAssessment />} />
-        
-        {/* Public auth routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Login />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
-        
-        {/* Protected routes */}
-        <Route path="/" element={<Layout onSearchOpen={() => setIsSearchOpen(true)} />}>
-          <Route index element={<Dashboard />} />
-          <Route path="learning-path" element={<LearningPath />} />
-          <Route path="lesson/:lessonId" element={<LessonViewer />} />
-          <Route path="vocabulary" element={<VocabularyReview />} />
-          <Route path="conversation-practice" element={<ConversationPractice />} />
-          <Route path="achievements" element={<Achievements />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <GoogleAnalytics />
+        <Routes>
+          {/* Public landing page */}
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/home" element={<Landing />} />
+          
+          {/* Skills Assessment */}
+          <Route path="/assessment" element={<SkillsAssessment />} />
+          
+          {/* Public auth routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Login />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/blog/business-spanish-guide-2026" element={<BusinessSpanishGuide2026 />} />
+          <Route path="/blog/spanish-in-healthcare" element={<SpanishInHealthcare />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          
+          {/* Protected routes */}
+          <Route path="/" element={<Layout onSearchOpen={() => setIsSearchOpen(true)} />}>
+            <Route index element={<Dashboard />} />
+            <Route path="learning-path" element={<LearningPath />} />
+            <Route path="lesson/:lessonId" element={<LessonViewer />} />
+            <Route path="vocabulary" element={<VocabularyReview />} />
+            <Route path="conversation-practice" element={<ConversationPractice />} />
+            <Route path="achievements" element={<Achievements />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
 
-      {/* Search Modal */}
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        {/* Search Modal */}
+        <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-      {/* Achievement Toasts */}
-      {newAchievements.map((achievement, index) => (
-        <AchievementToast
-          key={achievement.id}
-          achievement={achievement}
-          onClose={() => {
-            if (index === newAchievements.length - 1) {
-              clearNewAchievements();
-            }
-          }}
-        />
-      ))}
-    </BrowserRouter>
+        {/* Achievement Toasts */}
+        {newAchievements.map((achievement, index) => (
+          <AchievementToast
+            key={achievement.id}
+            achievement={achievement}
+            onClose={() => {
+              if (index === newAchievements.length - 1) {
+                clearNewAchievements();
+              }
+            }}
+          />
+        ))}
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

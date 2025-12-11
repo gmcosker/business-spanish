@@ -103,14 +103,14 @@ export default function Analytics() {
           label="Current Streak"
           value={progress.streakDays.toString()}
           subtext="days in a row"
-          color="orange"
+          color="cyan"
         />
         <MetricCard
           icon={<Award className="w-5 h-5" />}
           label="Achievements"
           value={progress.achievements.length.toString()}
           subtext="badges earned"
-          color="purple"
+          color="sky"
         />
       </div>
 
@@ -267,7 +267,7 @@ export default function Analytics() {
             <div className="text-sm text-gray-600">Mastered</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-orange-600 mb-1">
+            <div className="text-3xl font-bold text-sky-600 mb-1">
               {modules.flatMap((m) => m.lessons.flatMap((l) => l.content.vocabulary || [])).length -
                 progress.vocabularyMastered}
             </div>
@@ -290,13 +290,13 @@ function MetricCard({
   label: string;
   value: string;
   subtext: string;
-  color: 'blue' | 'green' | 'orange' | 'purple';
+  color: 'blue' | 'green' | 'cyan' | 'sky';
 }) {
   const colorClasses = {
     blue: 'bg-blue-100 text-blue-600',
     green: 'bg-green-100 text-green-600',
-    orange: 'bg-orange-100 text-orange-600',
-    purple: 'bg-purple-100 text-purple-600',
+    cyan: 'bg-cyan-100 text-cyan-600',
+    sky: 'bg-sky-100 text-sky-600',
   };
 
   return (

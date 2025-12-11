@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { User, Module, UserProgress, OnboardingData, VocabularyItem, Achievement, UserPreferences, DailyActivity } from '../types';
 import { checkNewAchievements } from '../utils/achievements';
 import { saveUserProgress, getUserProgress, trackDailyActivity as saveDailyActivityToFirestore } from '../services/firestore';
+import { analytics } from '../services/analytics';
 
 interface AppState {
   user: User | null;
@@ -154,12 +155,31 @@ export const useStore = create<AppState>()(
         
         set({ user, progress, isOnboarding: false });
         
+        // Track onboarding completion
+        analytics.completeOnboarding({
+          level: onboardingData.level,
+          industry: onboardingData.industry,
+          goal: onboardingData.goal,
+        });
+        
         // Save to Firestore if authenticated
         if (firebaseUser) {
           try {
             const { saveUserProgress } = await import('../services/firestore');
             await saveUserProgress(firebaseUser.uid, progress);
-            console.log('✅ Onboarding complete - progress saved to Firestore');
+            
+            // Also save user profile data (industry, level, goal) to Firestore
+            const { updateDoc, doc, serverTimestamp } = await import('firebase/firestore');
+            const { db } = await import('../config/firebase');
+            await updateDoc(doc(db, 'users', firebaseUser.uid), {
+              industry: onboardingData.industry || 'tech',
+              level: onboardingData.level || 'intermediate',
+              goal: onboardingData.goal || '',
+              targetDate: onboardingData.targetDate || null,
+              updatedAt: serverTimestamp(),
+            });
+            
+            console.log('✅ Onboarding complete - progress and profile saved to Firestore');
           } catch (error) {
             console.error('❌ Failed to save progress to Firestore:', error);
             // Don't throw - user can still continue, progress will sync later
@@ -216,10 +236,21 @@ export const useStore = create<AppState>()(
           // Auto-complete the module if all lessons are done
           if (allLessonsCompleted && !progress.completedModules.includes(module.id)) {
             updatedProgress.completedModules = [...updatedProgress.completedModules, module.id];
+            
+            // Track module completion
+            analytics.moduleComplete(module.id, currentIndustry || 'unknown');
           }
           
           // Check for new achievements
           const newAchievements = checkNewAchievements(updatedProgress);
+          
+          // Track achievement unlocks
+          newAchievements.forEach(achievement => {
+            analytics.achievementUnlocked(achievement.id, achievement.title);
+          });
+          
+          // Track lesson completion
+          analytics.lessonComplete(lessonId, module.id, currentIndustry || 'unknown', lesson.duration);
           
           set({
             progress: {

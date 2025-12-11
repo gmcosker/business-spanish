@@ -60,7 +60,7 @@ export default function Profile() {
         <div className="lg:col-span-1">
           <div className="card p-6">
             <div className="text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-sky-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <User className="w-12 h-12 text-white" />
               </div>
               <h2 className="text-xl font-bold text-gray-900 mb-1">{user.name}</h2>
@@ -70,7 +70,7 @@ export default function Profile() {
                 <span className="text-xs bg-primary-100 text-primary-700 px-3 py-1 rounded-full capitalize">
                   {user.industry}
                 </span>
-                <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full capitalize">
+                <span className="text-xs bg-sky-100 text-sky-700 px-3 py-1 rounded-full capitalize">
                   {user.level}
                 </span>
               </div>
@@ -139,7 +139,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="card p-6 bg-gradient-to-br from-orange-50 to-red-50">
+            <div className="card p-6 bg-gradient-to-br from-sky-50 to-cyan-50">
               <div className="flex items-center gap-3">
                 <div className="text-4xl">🔥</div>
                 <div>
@@ -153,8 +153,8 @@ export default function Profile() {
 
             <div className="card p-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Settings className="w-5 h-5 text-purple-600" />
+                <div className="p-2 bg-sky-100 rounded-lg">
+                  <Settings className="w-5 h-5 text-sky-600" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-gray-900">

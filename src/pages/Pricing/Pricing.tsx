@@ -1,17 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, Sparkles, Users, Zap } from 'lucide-react';
 import { PRICING_PLANS } from '../../config/stripe';
 import { subscribeToPlan } from '../../services/stripe';
 import { useStore } from '../../store/useStore';
+import { analytics } from '../../services/analytics';
+import { usePageSEO } from '../../hooks/usePageSEO';
 
 export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useStore();
   const [loading, setLoading] = useState<string | null>(null);
 
+  // Track pricing page view
+  useEffect(() => {
+    analytics.viewPricing();
+  }, []);
+
+  usePageSEO({
+    title: 'Avance Pricing | Choose Your Business Spanish Plan',
+    description:
+      'Find the right Avance plan to master business Spanish. Compare free and professional tiers with AI conversation practice, industry modules, and analytics.',
+    canonicalPath: '/pricing',
+  });
+
   const handleSubscribe = async (planKey: 'professional' | 'team') => {
     setLoading(planKey);
+    
+    const plan = PRICING_PLANS[planKey];
+    
+    // Track checkout initiation
+    analytics.beginCheckout(planKey, plan.price);
     
     try {
       // Subscribe to plan via Stripe Checkout
@@ -116,8 +135,8 @@ export default function Pricing() {
           {/* Team Plan */}
           <div className="bg-white rounded-2xl border-2 border-gray-200 p-8 relative">
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
-                <Users className="w-8 h-8 text-purple-600" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-sky-100 rounded-full mb-4">
+                <Users className="w-8 h-8 text-sky-600" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
                 {PRICING_PLANS.team.name}
@@ -133,7 +152,7 @@ export default function Pricing() {
             <ul className="space-y-4 mb-8">
               {PRICING_PLANS.team.features.map((feature, index) => (
                 <li key={index} className="flex items-start">
-                  <Check className="w-5 h-5 text-purple-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 text-sky-600 mr-3 flex-shrink-0 mt-0.5" />
                   <span className="text-gray-700">{feature}</span>
                 </li>
               ))}
@@ -142,7 +161,7 @@ export default function Pricing() {
             <button
               onClick={() => handleSubscribe('team')}
               disabled={loading === 'team'}
-              className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+              className="w-full px-6 py-3 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 transition-colors disabled:opacity-50"
             >
               {loading === 'team' ? 'Processing...' : 'Subscribe Now'}
             </button>

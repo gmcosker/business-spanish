@@ -26,6 +26,8 @@ export default function Achievements() {
     }
   });
 
+  const hasUnlockedAchievements = progress.achievements.length > 0;
+
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
@@ -36,23 +38,50 @@ export default function Achievements() {
         </p>
       </div>
 
-      {/* Progress bar */}
-      <div className="card p-6">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Overall Progress</span>
-          <span className="text-sm font-semibold text-primary-600">
-            {Math.round((progress.achievements.length / Object.keys(allAchievements).length) * 100)}%
-          </span>
+      {/* Empty state for no achievements */}
+      {!hasUnlockedAchievements && (
+        <div className="card p-8 text-center">
+          <div className="text-6xl mb-4">🏆</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Start Your Journey</h2>
+          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            Complete lessons, build your vocabulary, and maintain your streak to unlock achievements and track your progress!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={() => window.location.href = '/learning-path'}
+              className="btn-primary"
+            >
+              Start Learning
+            </button>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="btn-secondary"
+            >
+              Go to Dashboard
+            </button>
+          </div>
         </div>
-        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all"
-            style={{
-              width: `${(progress.achievements.length / Object.keys(allAchievements).length) * 100}%`,
-            }}
-          />
+      )}
+
+      {/* Progress bar - only show if has achievements */}
+      {hasUnlockedAchievements && (
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-700">Overall Progress</span>
+            <span className="text-sm font-semibold text-primary-600">
+              {Math.round((progress.achievements.length / Object.keys(allAchievements).length) * 100)}%
+            </span>
+          </div>
+          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-sky-400 to-cyan-500 rounded-full transition-all"
+              style={{
+                width: `${(progress.achievements.length / Object.keys(allAchievements).length) * 100}%`,
+              }}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Achievement categories */}
       {Object.entries(categories).map(([key, category]) => (
@@ -67,7 +96,7 @@ export default function Achievements() {
                   key={achievement.id}
                   className={`card p-6 transition-all ${
                     isUnlocked
-                      ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 to-orange-50'
+                      ? 'border-sky-300 bg-gradient-to-br from-sky-50 to-cyan-50'
                       : 'opacity-60'
                   }`}
                 >

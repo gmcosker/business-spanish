@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mic, MicOff, ChevronRight, Volume2, Check, X } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import { analytics } from '../../services/analytics';
 import './SkillsAssessment.css';
+import { usePageSEO } from '../../hooks/usePageSEO';
 
 interface AssessmentResults {
   speaking: number;
@@ -20,6 +22,13 @@ const SkillsAssessment: React.FC = () => {
   const navigate = useNavigate();
   const { completeOnboarding } = useStore();
   
+  usePageSEO({
+    title: 'Spanish Skills Assessment | Avance',
+    description:
+      'Take the Avance business Spanish skills assessment to personalize your learning path across speaking, vocabulary, listening, and industry knowledge.',
+    canonicalPath: '/assessment',
+  });
+  
   const [currentSection, setCurrentSection] = useState<string>('intro');
   const [speakingTranscript, setSpeakingTranscript] = useState<string>('');
   const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -31,6 +40,11 @@ const SkillsAssessment: React.FC = () => {
   const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
+    // Track assessment start when component mounts
+    if (currentSection === 'intro') {
+      analytics.startAssessment();
+    }
+    
     // Initialize Web Speech API
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -238,6 +252,12 @@ const SkillsAssessment: React.FC = () => {
       const assessmentResults = calculateResults();
       setResults(assessmentResults);
       setCurrentSection('results');
+      
+      // Track assessment completion
+      analytics.completeAssessment({
+        score: assessmentResults.overall,
+        recommendedIndustry: answers.industry || 'tech',
+      });
     } else if (currentSection === 'results') {
       // Complete onboarding with assessment results
       completeOnboarding();

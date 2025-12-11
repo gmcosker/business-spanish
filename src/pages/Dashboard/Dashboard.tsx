@@ -3,10 +3,22 @@ import { useStore } from '../../store/useStore';
 import { BookOpen, Target, TrendingUp, Clock, Award, ArrowRight, Brain, ClipboardList } from 'lucide-react';
 import { getWordsToReview } from '../../utils/spacedRepetition';
 import type { VocabularyItem } from '../../types';
+import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
   const { user, progress, modules } = useStore();
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Create default user/progress if auth is bypassed (development mode)
   const defaultUser = {
@@ -83,20 +95,21 @@ export default function Dashboard() {
           icon={<Brain className="w-5 h-5" />}
           label="Words to Review"
           value={wordsToReview.length.toString()}
-          color={wordsToReview.length > 0 ? 'orange' : 'green'}
+          color={wordsToReview.length > 0 ? 'sky' : 'green'}
           highlight={wordsToReview.length > 0}
         />
         <StatCard
           icon={<Award className="w-5 h-5" />}
           label="Vocabulary Mastered"
           value={allVocabulary.filter(v => v.repetitions > 3).length.toString()}
-          color="purple"
+          color="sky"
         />
         <StatCard
           icon={<Target className="w-5 h-5" />}
           label="Weekly Goal"
           value={`${currentProgress.weeklyProgressCount || 0}/${currentProgress.weeklyGoal || 0}`}
-          color="orange"
+          color="cyan"
+          highlight={currentProgress.weeklyProgressCount >= currentProgress.weeklyGoal}
         />
       </div>
 
@@ -105,7 +118,7 @@ export default function Dashboard() {
         {/* Continue learning */}
         <div className="lg:col-span-2 space-y-6">
           {/* Next lesson card */}
-          {nextLesson && (
+          {nextLesson ? (
             <div className="card p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -115,23 +128,54 @@ export default function Dashboard() {
                 <Clock className="w-5 h-5 text-gray-400" />
               </div>
 
-              <div className="bg-gradient-to-r from-primary-50 to-purple-50 rounded-lg p-6 mb-4">
-                <div className="flex items-center gap-2 text-sm text-primary-700 mb-2">
-                  <BookOpen className="w-4 h-4" />
-                  <span className="font-medium">Next Lesson</span>
+              <div className="relative overflow-hidden bg-gradient-to-br from-primary-500 via-primary-600 to-sky-600 rounded-xl p-6 mb-4 shadow-lg">
+                {/* Subtle pattern overlay */}
+                <div className="absolute inset-0 opacity-10" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }} />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 text-sm text-white/90 mb-2">
+                    <BookOpen className="w-4 h-4" />
+                    <span className="font-medium">Next Lesson</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {nextLesson.title}
+                  </h3>
+                  <p className="text-sm text-white/80 mb-4">
+                    {nextLesson.duration} minutes • {nextLesson.type}
+                  </p>
+                  <button
+                    onClick={() => navigate(`/lesson/${nextLesson.id}`)}
+                    className="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-white/90 active:bg-white/80 transition-colors inline-flex items-center gap-2 shadow-md touch-target"
+                  >
+                    Start Lesson <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {nextLesson.title}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  {nextLesson.duration} minutes • {nextLesson.type}
+              </div>
+            </div>
+          ) : (
+            <div className="card p-6">
+              <div className="text-center py-8">
+                <div className="text-6xl mb-4">🎉</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">All Lessons Completed!</h2>
+                <p className="text-gray-600 mb-6">
+                  You've finished all available lessons. Great work! Keep practicing to maintain your skills.
                 </p>
+                <div className="space-y-3">
                 <button
-                  onClick={() => navigate(`/lesson/${nextLesson.id}`)}
-                  className="btn-primary inline-flex items-center gap-2"
+                  onClick={() => navigate('/vocabulary')}
+                  className="btn-primary inline-flex items-center gap-2 touch-target"
                 >
-                  Start Lesson <ArrowRight className="w-4 h-4" />
+                  Review Vocabulary <ArrowRight className="w-4 h-4" />
                 </button>
+                <button
+                  onClick={() => navigate('/conversation-practice')}
+                  className="btn-secondary block mx-auto touch-target"
+                >
+                  Practice Conversations
+                </button>
+                </div>
               </div>
             </div>
           )}
@@ -139,33 +183,53 @@ export default function Dashboard() {
           {/* Learning path progress */}
           <div className="card p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Your Learning Path</h2>
-            <div className="space-y-3">
-              {modules.slice(0, 3).map((module) => (
-                <ModuleCard key={module.id} module={module} progress={currentProgress} />
-              ))}
-            </div>
-            <button
-              onClick={() => navigate('/learning-path')}
-              className="mt-4 w-full btn-secondary"
-            >
-              View All Modules
-            </button>
+            {modules.length > 0 ? (
+              <>
+                <div className="space-y-3">
+                  {modules.slice(0, 3).map((module) => (
+                    <ModuleCard key={module.id} module={module} progress={currentProgress} />
+                  ))}
+                </div>
+                <button
+                  onClick={() => navigate('/learning-path')}
+                  className="mt-4 w-full btn-secondary"
+                >
+                  View All Modules
+                </button>
+              </>
+            ) : (
+              <div className="text-center py-6">
+                <div className="text-4xl mb-3">📚</div>
+                <p className="text-gray-600 mb-4">No modules available yet.</p>
+                <button
+                  onClick={() => navigate('/learning-path')}
+                  className="btn-secondary"
+                >
+                  Explore Learning Path
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Goal card */}
-          <div className="card p-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Your Goal</h3>
-            <div className="bg-primary-50 rounded-lg p-4">
-              <Target className="w-6 h-6 text-primary-600 mb-2" />
-              <p className="text-sm text-gray-700">{currentUser.goal}</p>
-              {currentUser.targetDate && (
-                <p className="text-xs text-gray-600 mt-2">
-                  Target: {new Date(currentUser.targetDate).toLocaleDateString()}
-                </p>
-              )}
+          <div className="card p-6 relative overflow-hidden">
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-sky-500/5 to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <h3 className="font-semibold text-gray-900 mb-3">Your Goal</h3>
+              <div className="bg-gradient-to-br from-primary-50 to-sky-50 rounded-lg p-4 border border-primary-100/50">
+                <Target className="w-6 h-6 text-primary-600 mb-2" />
+                <p className="text-sm text-gray-700 font-medium">{currentUser.goal}</p>
+                {currentUser.targetDate && (
+                  <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Target: {new Date(currentUser.targetDate).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -175,16 +239,16 @@ export default function Dashboard() {
             <div className="space-y-2">
               <button
                 onClick={() => navigate('/vocabulary')}
-                className={`w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 border ${
+                className={`w-full text-left px-4 py-4 rounded-lg hover:bg-gray-50 active:bg-gray-100 border touch-target ${
                   wordsToReview.length > 0 
-                    ? 'border-orange-300 bg-orange-50' 
+                    ? 'border-sky-300 bg-sky-50' 
                     : 'border-gray-200'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-900">Review Vocabulary</span>
                   {wordsToReview.length > 0 && (
-                    <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                    <span className="bg-sky-500 text-white text-xs px-2 py-1 rounded-full">
                       {wordsToReview.length}
                     </span>
                   )}
@@ -197,7 +261,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => navigate('/assessment')}
-                className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 border border-gray-200"
+                className="w-full text-left px-4 py-4 rounded-lg hover:bg-gray-50 active:bg-gray-100 border border-gray-200 touch-target"
               >
                 <div className="flex items-center gap-2">
                   <ClipboardList className="w-5 h-5 text-primary-600" />
@@ -209,7 +273,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => navigate('/learning-path')}
-                className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 border border-gray-200"
+                className="w-full text-left px-4 py-4 rounded-lg hover:bg-gray-50 active:bg-gray-100 border border-gray-200 touch-target"
               >
                 <div className="font-medium text-gray-900">Browse Modules</div>
                 <div className="text-sm text-gray-600">Explore all lessons</div>
@@ -218,14 +282,22 @@ export default function Dashboard() {
           </div>
 
           {/* Streak card */}
-          <div className="card p-6 bg-gradient-to-br from-orange-50 to-red-50">
-            <div className="text-center">
-              <div className="text-5xl mb-2">🔥</div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">
+          <div className="card p-6 relative overflow-hidden bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-500 shadow-lg">
+            {/* Animated gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-300/20 via-transparent to-blue-400/20 animate-pulse" />
+            
+            {/* Pattern overlay */}
+            <div className="absolute inset-0 opacity-10" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h-2zm-2 0v2H0v-2h18zm0-4v2H0v-2h18zm0-4v2H0v-2h18z'/%3E%3C/g%3E%3C/svg%3E")`,
+            }} />
+            
+            <div className="relative z-10 text-center">
+              <div className="text-5xl mb-2 drop-shadow-lg">🔥</div>
+              <div className="text-3xl font-bold text-white mb-1 drop-shadow-md">
                 {currentProgress.streakDays}
               </div>
-              <div className="text-sm text-gray-600">Day Streak</div>
-              <p className="text-xs text-gray-600 mt-2">Keep it up!</p>
+              <div className="text-sm text-white/90 font-medium">Day Streak</div>
+              <p className="text-xs text-white/80 mt-2">Keep it up!</p>
             </div>
           </div>
         </div>
@@ -244,23 +316,54 @@ function StatCard({
   icon: React.ReactNode;
   label: string;
   value: string;
-  color: 'blue' | 'green' | 'purple' | 'orange';
+  color: 'blue' | 'green' | 'sky' | 'cyan';
   highlight?: boolean;
 }) {
-  const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    purple: 'bg-purple-50 text-purple-600',
-    orange: 'bg-orange-50 text-orange-600',
+  const colorConfig = {
+    blue: {
+      iconBg: 'bg-blue-50 text-blue-600',
+      gradient: 'from-blue-500/10 via-blue-400/5 to-transparent',
+      borderGradient: 'from-blue-500 to-blue-400',
+      border: 'border-blue-200',
+    },
+    green: {
+      iconBg: 'bg-green-50 text-green-600',
+      gradient: 'from-green-500/10 via-green-400/5 to-transparent',
+      borderGradient: 'from-green-500 to-green-400',
+      border: 'border-green-200',
+    },
+    sky: {
+      iconBg: 'bg-sky-50 text-sky-600',
+      gradient: 'from-sky-500/10 via-sky-400/5 to-transparent',
+      borderGradient: 'from-sky-500 to-sky-400',
+      border: 'border-sky-200',
+    },
+    cyan: {
+      iconBg: 'bg-cyan-50 text-cyan-600',
+      gradient: 'from-cyan-500/10 via-cyan-400/5 to-transparent',
+      borderGradient: 'from-cyan-500 to-cyan-400',
+      border: 'border-cyan-200',
+    },
   };
 
+  const config = colorConfig[color];
+
   return (
-    <div className={`card p-6 ${highlight ? 'ring-2 ring-orange-500' : ''}`}>
-      <div className={`inline-flex p-2 rounded-lg ${colorClasses[color]} mb-3`}>
-        {icon}
+    <div className={`card p-6 relative overflow-hidden ${highlight ? 'ring-2 ring-sky-500 ring-offset-2' : ''}`}>
+      {/* Gradient overlay */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient} pointer-events-none`} />
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <div className={`inline-flex p-2 rounded-lg ${config.iconBg} mb-3 shadow-sm`}>
+          {icon}
+        </div>
+        <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
+        <div className="text-sm text-gray-600">{label}</div>
       </div>
-      <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
-      <div className="text-sm text-gray-600">{label}</div>
+      
+      {/* Subtle border accent */}
+      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${config.borderGradient} opacity-30`} />
     </div>
   );
 }
@@ -278,21 +381,46 @@ function ModuleCard({
   const totalLessons = module.lessons.length;
   const percentage = Math.round((completedLessons / totalLessons) * 100);
 
+  // Color-coded progress: green (80%+), sky (50-79%), cyan (25-49%), blue (<25%)
+  const getProgressColor = (percent: number) => {
+    if (percent >= 80) return 'from-green-500 to-green-600';
+    if (percent >= 50) return 'from-sky-500 to-sky-600';
+    if (percent >= 25) return 'from-cyan-500 to-cyan-600';
+    return 'from-blue-500 to-blue-600';
+  };
+
+  const getProgressBgColor = (percent: number) => {
+    if (percent >= 80) return 'bg-green-50 border-green-200';
+    if (percent >= 50) return 'bg-sky-50 border-sky-200';
+    if (percent >= 25) return 'bg-cyan-50 border-cyan-200';
+    return 'bg-blue-50 border-blue-200';
+  };
+
+  const progressGradient = getProgressColor(percentage);
+  const cardBg = getProgressBgColor(percentage);
+
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 transition-colors">
+    <div className={`border rounded-lg p-4 hover:shadow-md transition-all ${cardBg}`}>
       <div className="flex items-start justify-between mb-2">
         <h4 className="font-medium text-gray-900">{module.title}</h4>
-        <span className="text-xs font-medium text-primary-600">{percentage}%</span>
+        <span className={`text-xs font-bold px-2 py-1 rounded ${
+          percentage >= 80 ? 'text-green-700 bg-green-100' :
+          percentage >= 50 ? 'text-sky-700 bg-sky-100' :
+          percentage >= 25 ? 'text-cyan-700 bg-cyan-100' :
+          'text-blue-700 bg-blue-100'
+        }`}>
+          {percentage}%
+        </span>
       </div>
       <p className="text-sm text-gray-600 mb-3">{module.description}</p>
       <div className="flex items-center gap-2">
-        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
           <div
-            className="h-full bg-primary-600 rounded-full transition-all"
+            className={`h-full bg-gradient-to-r ${progressGradient} rounded-full transition-all duration-500 shadow-sm`}
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <span className="text-xs text-gray-600">
+        <span className="text-xs font-medium text-gray-600 min-w-[3rem] text-right">
           {completedLessons}/{totalLessons}
         </span>
       </div>

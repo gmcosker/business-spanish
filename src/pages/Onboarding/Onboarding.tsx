@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
+import { analytics } from '../../services/analytics';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import type { LanguageLevel, Industry } from '../../types';
 
@@ -8,6 +9,13 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { onboardingData, updateOnboarding, completeOnboarding, setModules, setAllModules, setCurrentIndustry } = useStore();
   const [step, setStep] = useState(onboardingData.step);
+
+  // Track onboarding start
+  useEffect(() => {
+    if (step === 0) {
+      analytics.startOnboarding();
+    }
+  }, []);
 
   const handleNext = () => {
     updateOnboarding({ step: step + 1 });
@@ -32,9 +40,9 @@ export default function Onboarding() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">BS</span>
+              <span className="text-white font-bold text-2xl">A</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900">Business Spanish Pro</span>
+            <span className="text-2xl font-bold text-gray-900">Avance</span>
           </div>
           <p className="text-gray-600">Professional Spanish for Real-World Business</p>
         </div>
@@ -85,7 +93,7 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
   return (
     <div className="text-center">
       <h1 className="text-3xl font-bold text-gray-900 mb-4">
-        Welcome to Business Spanish Pro
+        Welcome to Avance
       </h1>
       <p className="text-lg text-gray-600 mb-8">
         Master Spanish for real-world business communication across Latin America.

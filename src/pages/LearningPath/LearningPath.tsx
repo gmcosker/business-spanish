@@ -35,12 +35,12 @@ export default function LearningPath() {
   if (!progress) return null;
 
   const industries = {
-    'tech': { name: 'Tech & Startups', modules: allModules['tech'] || [], color: 'purple' },
+    'tech': { name: 'Tech & Startups', modules: allModules['tech'] || [], color: 'sky' },
     'finance': { name: 'Finance & Banking', modules: allModules['finance'] || [], color: 'green' },
     'logistics': { name: 'Logistics & Supply Chain', modules: allModules['logistics'] || [], color: 'blue' },
-    'customer-service': { name: 'Customer Service', modules: allModules['customer-service'] || [], color: 'orange' },
-    'architecture': { name: 'Architecture & Construction', modules: allModules['architecture'] || [], color: 'amber' },
-    'healthcare': { name: 'Healthcare & Medical Admin', modules: allModules['healthcare'] || [], color: 'rose' },
+    'customer-service': { name: 'Customer Service', modules: allModules['customer-service'] || [], color: 'cyan' },
+    'architecture': { name: 'Architecture & Construction', modules: allModules['architecture'] || [], color: 'sky' },
+    'healthcare': { name: 'Healthcare & Medical Admin', modules: allModules['healthcare'] || [], color: 'cyan' },
   } as const;
 
   const canSwitchIndustries = hasFeatureAccess(user?.subscriptionTier, 'multipleIndustries');
@@ -160,34 +160,38 @@ export default function LearningPath() {
       {/* Progress overview */}
       <div className="space-y-4">
         {/* Current Industry Progress Card */}
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                {currentIndustry ? industries[currentIndustry as keyof typeof industries].name : 'Overall'} Progress
-              </h2>
-              <p className="text-sm text-gray-600">
-                {completedModulesInCurrentIndustry} of {modules.length || 0} modules completed
-                {currentIndustry && (
-                  <span className="ml-2 text-xs text-gray-500">
-                    ({totalCompletedModules} total across all industries)
-                  </span>
-                )}
-              </p>
+        <div className="card p-6 relative overflow-hidden">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-sky-500/5 to-transparent pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {currentIndustry ? industries[currentIndustry as keyof typeof industries].name : 'Overall'} Progress
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {completedModulesInCurrentIndustry} of {modules.length || 0} modules completed
+                  {currentIndustry && (
+                    <span className="ml-2 text-xs text-gray-500">
+                      ({totalCompletedModules} total across all industries)
+                    </span>
+                  )}
+                </p>
+              </div>
+              <div className="text-3xl font-bold text-primary-600">
+                {currentIndustryProgress}%
+              </div>
             </div>
-            <div className="text-3xl font-bold text-primary-600">
-              {currentIndustryProgress}%
+            
+            {/* Current industry progress bar */}
+            <div className="h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+              <div
+                className="h-full bg-gradient-to-r from-primary-600 to-sky-600 rounded-full transition-all duration-500 shadow-sm"
+                style={{
+                  width: `${currentIndustryProgress}%`,
+                }}
+              />
             </div>
-          </div>
-          
-          {/* Current industry progress bar */}
-          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-primary-600 to-purple-600 rounded-full transition-all duration-500"
-              style={{
-                width: `${currentIndustryProgress}%`,
-              }}
-            />
           </div>
         </div>
 
@@ -212,11 +216,11 @@ export default function LearningPath() {
                       {completedInIndustry}/{industryModules.length} modules • {progressPercent}%
                     </span>
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                     <div
                       className={`h-full rounded-full transition-all ${
                         key === currentIndustry
-                          ? 'bg-gradient-to-r from-primary-600 to-primary-400'
+                          ? 'bg-gradient-to-r from-primary-600 to-sky-600'
                           : 'bg-gray-400'
                       }`}
                       style={{ width: `${progressPercent}%` }}
@@ -230,8 +234,23 @@ export default function LearningPath() {
       </div>
 
       {/* Modules list */}
-      <div className="space-y-4">
-        {modules.map((module, index) => {
+      {modules.length === 0 ? (
+        <div className="card p-8 text-center">
+          <div className="text-6xl mb-4">📖</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Modules Available</h2>
+          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            Modules for your selected industry are loading. If this persists, try selecting a different industry or refresh the page.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary"
+          >
+            Refresh Page
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {modules.map((module, index) => {
           const completedLessons = module.lessons.filter((l) =>
             progress.completedLessons.includes(l.id)
           ).length;
@@ -254,18 +273,26 @@ export default function LearningPath() {
           return (
             <div
               key={module.id}
-              className={`card p-6 ${
-                isUnlocked ? 'hover:shadow-md transition-shadow' : 'opacity-60'
+              className={`card p-6 relative overflow-hidden ${
+                isUnlocked ? 'hover:shadow-md transition-all' : 'opacity-60'
               }`}
             >
-              <div className="flex items-start gap-4">
+              {/* Subtle gradient overlay for unlocked modules */}
+              {isUnlocked && !isCompleted && (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/3 via-sky-500/3 to-transparent pointer-events-none" />
+              )}
+              {isCompleted && (
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent pointer-events-none" />
+              )}
+              
+              <div className="relative z-10 flex items-start gap-4">
                 {/* Module number */}
                 <div
-                  className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold ${
+                  className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold shadow-sm ${
                     isCompleted
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-green-100 text-green-700 ring-2 ring-green-200'
                       : isUnlocked
-                      ? 'bg-primary-100 text-primary-700'
+                      ? 'bg-primary-100 text-primary-700 ring-2 ring-primary-200'
                       : 'bg-gray-100 text-gray-400'
                   }`}
                 >
@@ -303,14 +330,28 @@ export default function LearningPath() {
 
                   {/* Progress bar */}
                   <div className="mb-4">
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary-600 rounded-full transition-all"
-                        style={{
-                          width: `${(completedLessons / totalLessons) * 100}%`,
-                        }}
-                      />
-                    </div>
+                    {(() => {
+                      const percentage = Math.round((completedLessons / totalLessons) * 100);
+                      // Color-coded progress: green (80%+), sky (50-79%), cyan (25-49%), blue (<25%)
+                      const getProgressColor = (percent: number) => {
+                        if (percent >= 80) return 'from-green-500 to-green-600';
+                        if (percent >= 50) return 'from-sky-500 to-sky-600';
+                        if (percent >= 25) return 'from-cyan-500 to-cyan-600';
+                        return 'from-blue-500 to-blue-600';
+                      };
+                      const progressGradient = getProgressColor(percentage);
+                      
+                      return (
+                        <div className="h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                          <div
+                            className={`h-full bg-gradient-to-r ${progressGradient} rounded-full transition-all duration-500 shadow-sm`}
+                            style={{
+                              width: `${percentage}%`,
+                            }}
+                          />
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Lessons list */}
@@ -365,7 +406,8 @@ export default function LearningPath() {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

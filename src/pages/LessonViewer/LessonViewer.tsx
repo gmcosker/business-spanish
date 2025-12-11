@@ -1,87 +1,18 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
-import { ArrowLeft, CheckCircle, Volume2, Eye, EyeOff, AlertCircle, Pause } from 'lucide-react';
-import { useState } from 'react';
+import { analytics } from '../../services/analytics';
+import { ArrowLeft, CheckCircle, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import SpeechPractice from '../../components/SpeechPractice/SpeechPractice';
-
-// AudioController component for managing play/pause/resume
-function AudioController({ text }: { text: string }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const handleToggle = () => {
-    if (!isPlaying && !isPaused) {
-      // Start playing
-      const voices = window.speechSynthesis.getVoices();
-      let spanishVoice = voices.find(v => v.lang === 'es-ES' && v.name.toLowerCase().includes('sarah')) ||
-                         voices.find(v => v.lang === 'es-ES') ||
-                         voices.find(v => v.lang === 'es-MX') ||
-                         voices.find(v => v.lang === 'es-US') ||
-                         voices.find(v => v.lang.startsWith('es-'));
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      
-      if (spanishVoice) {
-        utterance.voice = spanishVoice;
-        utterance.lang = spanishVoice.lang;
-      } else {
-        utterance.lang = 'es-ES';
-      }
-      
-      utterance.rate = 0.85;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
-      
-      utterance.onend = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-      };
-      
-      utterance.onerror = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-      };
-      
-      window.speechSynthesis.speak(utterance);
-      setIsPlaying(true);
-      setIsPaused(false);
-    } else if (isPlaying && !isPaused) {
-      // Pause
-      window.speechSynthesis.pause();
-      setIsPaused(true);
-    } else if (isPaused) {
-      // Resume
-      window.speechSynthesis.resume();
-      setIsPaused(false);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleToggle}
-      className={`text-gray-400 transition-colors ${
-        isPlaying ? 'text-primary-600' : 'hover:text-primary-600'
-      }`}
-      title={
-        isPlaying && !isPaused ? 'Pause audio' :
-        isPaused ? 'Resume audio' :
-        'Play audio'
-      }
-    >
-      {isPlaying && !isPaused ? (
-        <Pause className="w-4 h-4" />
-      ) : (
-        <Volume2 className="w-4 h-4" />
-      )}
-    </button>
-  );
-}
+import AudioController from '../../components/AudioController/AudioController';
 
 export default function LessonViewer() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
-  const { modules, progress, completeLesson } = useStore();
+  const { modules, progress, completeLesson, currentIndustry } = useStore();
   const [showTranslations, setShowTranslations] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['dialogue']));
 
   if (!lessonId || !progress) return null;
 
@@ -100,6 +31,34 @@ export default function LessonViewer() {
   }
 
   const isCompleted = progress.completedLessons.includes(lesson.id);
+
+  // Track lesson start when lesson loads
+  useEffect(() => {
+    analytics.lessonStart(lesson.id, module.id, currentIndustry || 'unknown');
+  }, [lessonId]);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const toggleSection = (section: string) => {
+    if (!isMobile) return;
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(section)) {
+        next.delete(section);
+      } else {
+        next.add(section);
+      }
+      return next;
+    });
+  };
 
   const handleComplete = () => {
     completeLesson(lesson.id);
@@ -129,7 +88,7 @@ export default function LessonViewer() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className={`max-w-4xl mx-auto space-y-6 ${isMobile ? 'pb-24' : ''}`}>
       {/* Breadcrumb Navigation */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
         <button
@@ -182,67 +141,106 @@ export default function LessonViewer() {
           </div>
         )}
 
-        {/* Dialogue */}
+        {/* Dialogue - Mobile: Collapsible */}
         {lesson.content.dialogue && lesson.content.dialogue.length > 0 && (
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
+            <div 
+              className={`flex items-center justify-between mb-4 ${isMobile ? 'cursor-pointer' : ''}`}
+              onClick={() => isMobile && toggleSection('dialogue')}
+            >
               <h2 className="text-xl font-bold text-gray-900">Dialogue</h2>
-              <button
-                onClick={() => setShowTranslations(!showTranslations)}
-                className="flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700"
-              >
-                {showTranslations ? (
-                  <>
-                    <EyeOff className="w-4 h-4" /> Hide Translations
-                  </>
-                ) : (
-                  <>
-                    <Eye className="w-4 h-4" /> Show Translations
-                  </>
+              <div className="flex items-center gap-2">
+                {isMobile && (
+                  <span className="text-xs text-gray-500">
+                    {expandedSections.has('dialogue') ? '▼' : '▶'}
+                  </span>
                 )}
-              </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowTranslations(!showTranslations);
+                  }}
+                  className="flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 touch-target px-3 py-2"
+                >
+                  {showTranslations ? (
+                    <>
+                      <EyeOff className="w-4 h-4" /> {!isMobile && 'Hide Translations'}
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-4 h-4" /> {!isMobile && 'Show Translations'}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              {lesson.content.dialogue.map((line, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="font-semibold text-primary-700">{line.speaker}</div>
-                    <AudioController text={line.text} />
+            {(!isMobile || expandedSections.has('dialogue')) && (
+              <div className="space-y-4">
+                {lesson.content.dialogue.map((line, index) => (
+                  <div key={index} className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="font-semibold text-primary-700">{line.speaker}</div>
+                      <AudioController text={line.text} size="lg" />
+                    </div>
+                    <p className="text-lg text-gray-900 mb-2">{line.text}</p>
+                    {showTranslations && (
+                      <p className="text-sm text-gray-600 italic">{line.translation}</p>
+                    )}
                   </div>
-                  <p className="text-lg text-gray-900 mb-2">{line.text}</p>
-                  {showTranslations && (
-                    <p className="text-sm text-gray-600 italic">{line.translation}</p>
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Vocabulary */}
+        {/* Vocabulary - Mobile: Collapsible */}
         {lesson.content.vocabulary && lesson.content.vocabulary.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Key Vocabulary</h2>
-            <div className="grid gap-4">
-              {lesson.content.vocabulary.map((item) => (
-                <VocabularyItemCard key={item.id} item={item} />
-              ))}
+            <div 
+              className={`flex items-center justify-between mb-4 ${isMobile ? 'cursor-pointer' : ''}`}
+              onClick={() => isMobile && toggleSection('vocabulary')}
+            >
+              <h2 className="text-xl font-bold text-gray-900">Key Vocabulary</h2>
+              {isMobile && (
+                <span className="text-xs text-gray-500">
+                  {expandedSections.has('vocabulary') ? '▼' : '▶'}
+                </span>
+              )}
             </div>
+            {(!isMobile || expandedSections.has('vocabulary')) && (
+              <div className="grid gap-4">
+                {lesson.content.vocabulary.map((item) => (
+                  <VocabularyItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Cultural Notes */}
+        {/* Cultural Notes - Mobile: Collapsible */}
         {lesson.content.culturalNotes && lesson.content.culturalNotes.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Cultural Notes 🌎</h2>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
-              {lesson.content.culturalNotes.map((note, index) => (
-                <p key={index} className="text-sm text-gray-700">
-                  • {note}
-                </p>
-              ))}
+            <div 
+              className={`flex items-center justify-between mb-4 ${isMobile ? 'cursor-pointer' : ''}`}
+              onClick={() => isMobile && toggleSection('cultural')}
+            >
+              <h2 className="text-xl font-bold text-gray-900">Cultural Notes 🌎</h2>
+              {isMobile && (
+                <span className="text-xs text-gray-500">
+                  {expandedSections.has('cultural') ? '▼' : '▶'}
+                </span>
+              )}
             </div>
+            {(!isMobile || expandedSections.has('cultural')) && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+                {lesson.content.culturalNotes.map((note, index) => (
+                  <p key={index} className="text-sm text-gray-700">
+                    • {note}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -268,22 +266,42 @@ export default function LessonViewer() {
           </div>
         )}
 
-        {/* Complete button */}
-        <div className="flex items-center justify-between pt-6 border-t">
-          <button
-            onClick={() => navigate('/learning-path')}
-            className="btn-secondary"
-          >
-            Back to Modules
-          </button>
-          <button
-            onClick={handleComplete}
-            className="btn-primary flex items-center gap-2"
-          >
-            {isCompleted ? 'Continue to Next Lesson' : 'Mark as Complete'}
-            <CheckCircle className="w-5 h-5" />
-          </button>
-        </div>
+        {/* Complete button - Mobile: Fixed bottom, Desktop: Normal */}
+        {isMobile ? (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 safe-area-inset-bottom z-20 md:hidden">
+            <div className="max-w-4xl mx-auto grid grid-cols-2 gap-3">
+              <button
+                onClick={() => navigate('/learning-path')}
+                className="btn-secondary min-h-[56px]"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleComplete}
+                className="btn-primary flex items-center justify-center gap-2 min-h-[56px]"
+              >
+                {isCompleted ? 'Next' : 'Complete'}
+                <CheckCircle className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between pt-6 border-t">
+            <button
+              onClick={() => navigate('/learning-path')}
+              className="btn-secondary"
+            >
+              Back to Modules
+            </button>
+            <button
+              onClick={handleComplete}
+              className="btn-primary flex items-center gap-2"
+            >
+              {isCompleted ? 'Continue to Next Lesson' : 'Mark as Complete'}
+              <CheckCircle className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -293,16 +311,16 @@ function VocabularyItemCard({ item }: { item: any }) {
   return (
     <div className="border border-gray-200 rounded-lg p-4">
       <div className="flex items-start justify-between mb-2">
-        <div>
-          <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="text-lg font-semibold text-gray-900">
               {item.term}
             </span>
-            <AudioController text={item.term} />
+            <AudioController text={item.term} size="lg" />
           </div>
           <span className="text-sm text-gray-600">{item.translation}</span>
         </div>
-        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded ml-2">
           {item.context}
         </span>
       </div>
@@ -370,7 +388,7 @@ function ExerciseCard({ exercise }: { exercise: any }) {
               key={index}
               onClick={() => checkAnswer(option)}
               disabled={isCorrect !== null}
-              className={`w-full text-left px-4 py-2 rounded-lg border transition-all ${
+              className={`w-full text-left px-4 py-3 rounded-lg border transition-all touch-target ${
                 isCorrect === null ? 'cursor-pointer' : 'cursor-default'
               } ${getOptionClassName(option, userAnswer)}`}
             >
@@ -400,7 +418,7 @@ function ExerciseCard({ exercise }: { exercise: any }) {
             onChange={(e) => setUserAnswer(e.target.value)}
             onBlur={() => checkAnswer(userAnswer)}
             placeholder="Type your answer..."
-            className={`w-full px-4 py-2 border rounded-lg ${
+            className={`w-full px-4 py-3 border rounded-lg touch-target text-base ${
               isCorrect === true
                 ? 'border-green-500 bg-green-50'
                 : isCorrect === false

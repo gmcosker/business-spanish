@@ -20,6 +20,11 @@ export interface AuthUser {
   subscriptionTier: SubscriptionTier;
   createdAt: string;
   lastActiveAt: string;
+  // User preferences from onboarding
+  industry?: string;
+  level?: string;
+  goal?: string;
+  targetDate?: string;
 }
 
 /**

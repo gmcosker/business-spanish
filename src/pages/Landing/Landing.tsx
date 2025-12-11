@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Check, Star, ArrowRight, Shield, Clock, TrendingUp, 
   Users, Target, Zap, Play, Menu, X, ChevronDown,
-  Brain, MessageCircle, Timer, Repeat, Briefcase, BarChart3, Award
+  Brain, MessageCircle, Timer, Repeat, Briefcase, BarChart3, Award, HeartPulse
 } from 'lucide-react';
 import './Landing.css';
+import { usePageSEO } from '../../hooks/usePageSEO';
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -32,6 +33,13 @@ const Landing: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  usePageSEO({
+    title: 'Avance | Learn Business Spanish in 10 Minutes a Day',
+    description:
+      'Avance helps professionals master business Spanish with industry-specific lessons, AI conversation practice, and daily microlearning sessions.',
+    canonicalPath: '/landing',
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -54,15 +62,70 @@ const Landing: React.FC = () => {
     setIsMenuOpen(false);
   };
 
+  // FAQ data for structured data
+  const faqData = [
+    {
+      question: "How long does it take to see results?",
+      answer: "Most professionals see measurable improvement in business conversations within 2-3 weeks. You'll notice confidence in meetings and presentations after 30 days of consistent daily practice."
+    },
+    {
+      question: "What makes Avance different from other apps?",
+      answer: "We're the only Spanish app built specifically for business contexts. Our vocabulary is industry-specific, our conversations simulate real business scenarios (sales calls, negotiations, meetings), and our AI gives you professional-level feedback on pronunciation and fluency."
+    },
+    {
+      question: "How much time do I need to invest daily?",
+      answer: "Just 10 minutes per day. Our microlearning approach is designed for busy professionals. You can practice during your commute, lunch break, or before bed—whenever fits your schedule."
+    },
+    {
+      question: "What if I already speak conversational Spanish?",
+      answer: "Perfect! Avance is designed to bridge the gap between conversational Spanish and professional Spanish. You'll learn business-specific vocabulary, formal phrases for presentations, and industry terminology that conversational Spanish doesn't cover."
+    },
+    {
+      question: "Can multiple people in my team use one account?",
+      answer: "Each plan is designed for individual use to ensure personalized learning. For team needs, we offer Enterprise plans with team management, analytics, and volume discounts. Contact sales for details."
+    },
+    {
+      question: "What happens after my free trial?",
+      answer: "You can continue learning on the Basic plan for free with limited features, or upgrade to Professional for full access. No credit card required for the free trial, and you can cancel anytime."
+    },
+    {
+      question: "Do you offer corporate training programs?",
+      answer: "Yes! Our Enterprise plan includes custom content for your industry, team management tools, progress tracking, and dedicated account management. Contact our sales team for a custom quote."
+    },
+    {
+      question: "What's your refund policy?",
+      answer: "We offer a 30-day money-back guarantee. If you're not satisfied for any reason, email us and we'll issue a full refund—no questions asked."
+    }
+  ];
+
   return (
     <div className="landing-page">
+      {/* FAQ Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqData.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })
+        }}
+      />
+      
       {/* Sticky Header */}
       <header className="landing-header">
         <div className="container">
           <div className="header-content">
             <div className="logo">
               <TrendingUp className="logo-icon" />
-              <span>Business Spanish Pro</span>
+              <span>Avance</span>
             </div>
             
             <nav className={`header-nav ${isMenuOpen ? 'open' : ''}`}>
@@ -144,7 +207,7 @@ const Landing: React.FC = () => {
                   ))}
                 </div>
                 <p className="testimonial-quote">
-                  "Closed a $2M deal after just 3 weeks of using Business Spanish Pro. 
+                  "Closed a $2M deal after just 3 weeks of using Avance. 
                   This isn't just a language app—it's a career accelerator."
                 </p>
                 <div className="testimonial-author">
@@ -220,7 +283,7 @@ const Landing: React.FC = () => {
 
           <div className="solution-section">
             <div className="solution-content">
-              <h2 className="solution-title">The Business Spanish Pro Solution</h2>
+              <h2 className="solution-title">The Avance Solution</h2>
               <p className="solution-text">
                 We've completely reimagined language learning for professionals. Our AI-powered platform 
                 delivers industry-specific vocabulary, real-world business scenarios, and career-focused 
@@ -367,7 +430,7 @@ const Landing: React.FC = () => {
                 ))}
               </div>
               <p className="testimonial-text">
-                "I was struggling with client calls in Mexico. After 2 weeks with Business Spanish Pro, 
+                "I was struggling with client calls in Mexico. After 2 weeks with Avance, 
                 I closed a deal completely in Spanish. The industry-specific vocabulary is a game-changer."
               </p>
               <div className="testimonial-author-full">
@@ -405,7 +468,7 @@ const Landing: React.FC = () => {
                 ))}
               </div>
               <p className="testimonial-text">
-                "Our team of 20 sales reps uses Business Spanish Pro. We've seen 3x more successful 
+                "Our team of 20 sales reps uses Avance. We've seen 3x more successful 
                 outreach to Latin American markets. The ROI is undeniable."
               </p>
               <div className="testimonial-author-full">
@@ -424,7 +487,7 @@ const Landing: React.FC = () => {
                 ))}
               </div>
               <p className="testimonial-text">
-                "I was terrified of presenting in Spanish at a board meeting. Business Spanish Pro's 
+                "I was terrified of presenting in Spanish at a board meeting. Avance's 
                 conversation practice gave me the confidence I needed. Nailed it!"
               </p>
               <div className="testimonial-author-full">
@@ -466,7 +529,7 @@ const Landing: React.FC = () => {
             <div className="pricing-card">
               <div className="pricing-header">
                 <h3 className="pricing-name">Basic</h3>
-                <p className="pricing-description">Perfect for trying out Business Spanish Pro</p>
+                <p className="pricing-description">Perfect for trying out Avance</p>
               </div>
               <div className="pricing-price">
                 <span className="price-amount">Free</span>
@@ -558,7 +621,7 @@ const Landing: React.FC = () => {
               answer="Most professionals see measurable improvement in business conversations within 2-3 weeks. You'll notice confidence in meetings and presentations after 30 days of consistent daily practice."
             />
             <FAQItem 
-              question="What makes Business Spanish Pro different from other apps?"
+              question="What makes Avance different from other apps?"
               answer="We're the only Spanish app built specifically for business contexts. Our vocabulary is industry-specific, our conversations simulate real business scenarios (sales calls, negotiations, meetings), and our AI gives you professional-level feedback on pronunciation and fluency."
             />
             <FAQItem 
@@ -567,7 +630,7 @@ const Landing: React.FC = () => {
             />
             <FAQItem 
               question="What if I already speak conversational Spanish?"
-              answer="Perfect! Business Spanish Pro is designed to bridge the gap between conversational Spanish and professional Spanish. You'll learn business-specific vocabulary, formal phrases for presentations, and industry terminology that conversational Spanish doesn't cover."
+              answer="Perfect! Avance is designed to bridge the gap between conversational Spanish and professional Spanish. You'll learn business-specific vocabulary, formal phrases for presentations, and industry terminology that conversational Spanish doesn't cover."
             />
             <FAQItem 
               question="Can multiple people in my team use one account?"
@@ -585,6 +648,39 @@ const Landing: React.FC = () => {
               question="What's your refund policy?"
               answer="We offer a 30-day money-back guarantee. If you're not satisfied for any reason, email us and we'll issue a full refund—no questions asked."
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Resources Section */}
+      <section className="resources-section">
+        <div className="container">
+          <div className="section-header">
+            <span className="section-badge">Resources</span>
+            <h2 className="section-title">Learn More About Business Spanish</h2>
+          </div>
+          <div className="resources-grid">
+            <Link to="/blog/business-spanish-guide-2026" className="resource-card">
+              <div className="resource-icon">
+                <BookOpen className="icon-svg" />
+              </div>
+              <h3>The Complete Guide to Learning Spanish for Business in 2026</h3>
+              <p>Everything you need to know about mastering professional Spanish: market trends, proven methods, industry-specific strategies, and actionable steps.</p>
+              <div className="resource-link">
+                Read Guide <ArrowRight className="link-arrow" />
+              </div>
+            </Link>
+
+            <Link to="/blog/spanish-in-healthcare" className="resource-card">
+              <div className="resource-icon">
+                <HeartPulse className="icon-svg" />
+              </div>
+              <h3>Why Spanish Proficiency Matters in Healthcare</h3>
+              <p>Evidence-based analysis of how language access shapes patient safety, trust, and equity—plus strategies for clinicians and health systems.</p>
+              <div className="resource-link">
+                Explore Insights <ArrowRight className="link-arrow" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -644,7 +740,7 @@ const Landing: React.FC = () => {
           <div className="footer-content">
             <div className="footer-brand">
               <TrendingUp className="logo-icon" />
-              <span>Business Spanish Pro</span>
+              <span>Avance</span>
             </div>
             <div className="footer-links">
               <div className="footer-column">
@@ -665,13 +761,13 @@ const Landing: React.FC = () => {
                 <h4>Resources</h4>
                 <a href="#">Blog</a>
                 <a href="#">Help Center</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <Link to="/privacy">Privacy Policy</Link>
+                <Link to="/terms">Terms of Service</Link>
               </div>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 Business Spanish Pro. All rights reserved.</p>
+            <p>&copy; 2024 Avance. All rights reserved.</p>
           </div>
         </div>
       </footer>

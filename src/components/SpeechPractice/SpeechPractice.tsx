@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Volume2, CheckCircle, AlertCircle, Play, Pause } from 'lucide-react';
+import { Mic, MicOff, Volume2, CheckCircle, AlertCircle, Play, Pause, ChevronDown } from 'lucide-react';
 
 interface SpeechPracticeProps {
   targetPhrase: string;
@@ -12,12 +12,24 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [accuracyScore, setAccuracyScore] = useState<number | null>(null);
   const [recognition, setRecognition] = useState<any>(null);
   const [isSupported, setIsSupported] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const audioChunksRef = useRef<Blob[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Check if speech recognition is supported
@@ -34,6 +46,7 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
       recognitionInstance.onresult = (event: any) => {
         const spokenText = event.results[0][0].transcript;
         setTranscript(spokenText);
+        setAccuracyScore(null); // Reset before calculating
         checkAccuracy(spokenText);
         setIsListening(false);
       };
@@ -91,6 +104,7 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
     });
 
     const accuracy = (matchCount / words.length) * 100;
+    setAccuracyScore(Math.round(accuracy));
 
     if (accuracy >= 70) {
       setFeedback('correct');
@@ -151,6 +165,7 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
     
     setTranscript('');
     setFeedback(null);
+    setAccuracyScore(null);
     setIsListening(true);
     
     try {
@@ -168,22 +183,44 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
     }
   };
 
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Load saved speed preference
+  useEffect(() => {
+    const savedSpeed = localStorage.getItem('avance-audio-speed');
+    if (savedSpeed) {
+      const speed = parseFloat(savedSpeed);
+      if ([0.5, 0.75, 1.0, 1.25].includes(speed)) {
+        setPlaybackSpeed(speed);
+      }
+    }
+  }, []);
+
   const playAudio = () => {
     // Stop any ongoing playback
     if (isPlaying) {
       window.speechSynthesis.cancel();
       setIsPlaying(false);
+      utteranceRef.current = null;
       return;
     }
     
     setIsPlaying(true);
     // Use Web Speech API for text-to-speech
     const utterance = new SpeechSynthesisUtterance(targetPhrase);
+    utteranceRef.current = utterance;
     utterance.lang = 'es-ES';
-    utterance.rate = 0.8; // Slightly slower for learning
+    utterance.rate = playbackSpeed;
     
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
+    utterance.onend = () => {
+      setIsPlaying(false);
+      utteranceRef.current = null;
+    };
+    utterance.onerror = () => {
+      setIsPlaying(false);
+      utteranceRef.current = null;
+    };
     
     window.speechSynthesis.speak(utterance);
   };
@@ -218,43 +255,66 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
             <p className="text-xl font-semibold text-gray-900">{targetPhrase}</p>
             <p className="text-sm text-gray-600 mt-1 italic">{translation}</p>
           </div>
-          <button
-            onClick={playAudio}
-            className="p-2 text-primary-600 hover:bg-primary-100 rounded-lg transition-colors"
-            title={isPlaying ? "Stop playback" : "Listen to pronunciation"}
-          >
-            {isPlaying ? <Pause className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Speed selector */}
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const speeds = [0.5, 0.75, 1.0, 1.25];
+                  const currentIndex = speeds.indexOf(playbackSpeed);
+                  const nextIndex = (currentIndex + 1) % speeds.length;
+                  setPlaybackSpeed(speeds[nextIndex]);
+                  localStorage.setItem('avance-audio-speed', speeds[nextIndex].toString());
+                }}
+                className="text-xs text-gray-600 hover:text-gray-800 px-2 py-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors"
+                title="Click to cycle speed"
+              >
+                {playbackSpeed}x
+              </button>
+            </div>
+            <button
+              onClick={playAudio}
+              className="p-2 text-primary-600 hover:bg-primary-100 rounded-lg transition-colors"
+              title={isPlaying ? "Stop playback" : "Listen to pronunciation"}
+            >
+              {isPlaying ? <Pause className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Microphone control */}
+      {/* Microphone control - Mobile: Larger button */}
       <div className="text-center mb-4">
         <button
           onClick={isRecording ? stopRecording : (isListening ? stopListening : startRecording)}
           disabled={isListening}
-          className={`inline-flex items-center justify-center w-20 h-20 rounded-full transition-all ${
+          className={`inline-flex items-center justify-center rounded-full transition-all touch-target ${
+            isMobile 
+              ? 'w-24 h-24' 
+              : 'w-20 h-20'
+          } ${
             isRecording
-              ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+              ? 'bg-red-500 hover:bg-red-600 active:bg-red-700 animate-pulse'
               : isListening
-              ? 'bg-orange-500 hover:bg-orange-600'
-              : 'bg-primary-600 hover:bg-primary-700'
+              ? 'bg-orange-500 hover:bg-orange-600 active:bg-orange-700'
+              : 'bg-primary-600 hover:bg-primary-700 active:bg-primary-800'
           }`}
         >
           {isRecording ? (
-            <MicOff className="w-10 h-10 text-white" />
+            <MicOff className={`text-white ${isMobile ? 'w-12 h-12' : 'w-10 h-10'}`} />
           ) : isListening ? (
-            <Mic className="w-10 h-10 text-white animate-pulse" />
+            <Mic className={`text-white animate-pulse ${isMobile ? 'w-12 h-12' : 'w-10 h-10'}`} />
           ) : (
-            <Mic className="w-10 h-10 text-white" />
+            <Mic className={`text-white ${isMobile ? 'w-12 h-12' : 'w-10 h-10'}`} />
           )}
         </button>
         <p className="text-sm text-gray-600 mt-3">
           {isRecording 
-            ? 'Recording... Click to stop and analyze' 
+            ? 'Recording... Tap to stop and analyze' 
             : isListening 
             ? 'Listening... Speak now!' 
-            : 'Click to start recording'}
+            : 'Tap to start recording'}
         </p>
       </div>
 
@@ -264,6 +324,42 @@ export default function SpeechPractice({ targetPhrase, translation, onComplete }
           <p className="text-sm text-gray-600 mb-1">You said:</p>
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-gray-900">{transcript}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Accuracy Score */}
+      {accuracyScore !== null && (
+        <div className="mb-4">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Pronunciation Accuracy:</span>
+              <span className={`text-2xl font-bold ${
+                accuracyScore >= 90 ? 'text-green-600' :
+                accuracyScore >= 70 ? 'text-blue-600' :
+                accuracyScore >= 50 ? 'text-orange-600' :
+                'text-red-600'
+              }`}>
+                {accuracyScore}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  accuracyScore >= 90 ? 'bg-green-600' :
+                  accuracyScore >= 70 ? 'bg-blue-600' :
+                  accuracyScore >= 50 ? 'bg-orange-600' :
+                  'bg-red-600'
+                }`}
+                style={{ width: `${accuracyScore}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              {accuracyScore >= 90 ? 'Excellent!' :
+               accuracyScore >= 70 ? 'Good! Keep practicing.' :
+               accuracyScore >= 50 ? 'Getting there! Try again.' :
+               'Needs improvement. Listen and repeat.'}
+            </p>
           </div>
         </div>
       )}

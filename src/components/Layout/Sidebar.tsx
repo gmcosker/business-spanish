@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { hasFeatureAccess } from '../../utils/subscription';
+import { useSwipeable } from 'react-swipeable';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -20,6 +21,14 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user } = useStore();
+
+  // Swipe to close handler for mobile sidebar
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: onClose,
+    trackMouse: false,
+    trackTouch: true,
+    preventScrollOnSwipe: true,
+  });
 
   // Check access to premium features
   const canAccessConversationPractice = hasFeatureAccess(user?.subscriptionTier, 'conversationPractice');
@@ -49,9 +58,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="flex items-center h-16 px-6 border-b border-gray-200">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">BS</span>
+                <span className="text-white font-bold text-lg">A</span>
               </div>
-              <span className="font-semibold text-gray-900">Business Spanish Pro</span>
+              <span className="font-semibold text-gray-900">Avance</span>
             </div>
           </div>
 
@@ -91,6 +100,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* Mobile sidebar */}
       <aside
+        {...(isOpen ? swipeHandlers : {})}
         className={`lg:hidden fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 z-50 transform transition-transform duration-200 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
@@ -100,9 +110,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">BS</span>
+                <span className="text-white font-bold text-lg">A</span>
               </div>
-              <span className="font-semibold text-gray-900">Business Spanish Pro</span>
+              <span className="font-semibold text-gray-900">Avance</span>
             </div>
             <button
               onClick={onClose}
@@ -135,7 +145,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 to={item.to}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  isActive ? 'sidebar-item-active' : 'sidebar-item'
+                  `${isActive ? 'sidebar-item-active' : 'sidebar-item'} touch-target`
                 }
               >
                 <item.icon className="w-5 h-5" />
