@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     // Track error in analytics (async import to avoid circular dependency)
-    if (typeof window !== 'undefined' && window.gtag) {
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
       import('../../services/analytics').then(({ trackEvent }) => {
         trackEvent('exception', {
           description: error.message,

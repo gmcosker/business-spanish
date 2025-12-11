@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { 
   Check, Star, ArrowRight, Shield, Clock, TrendingUp, 
   Users, Target, Zap, Play, Menu, X, ChevronDown,
-  Brain, MessageCircle, Timer, Repeat, Briefcase, BarChart3, Award, HeartPulse
+  Brain, MessageCircle, Timer, Repeat, Briefcase, BarChart3, Award, HeartPulse, BookOpen
 } from 'lucide-react';
 import './Landing.css';
 import { usePageSEO } from '../../hooks/usePageSEO';
