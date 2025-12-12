@@ -23,6 +23,10 @@ import Terms from './pages/Terms/Terms';
 import NotFound from './pages/NotFound/NotFound';
 import BusinessSpanishGuide2026 from './pages/Blog/BusinessSpanishGuide2026';
 import SpanishInHealthcare from './pages/Blog/SpanishInHealthcare';
+import StudyGroups from './pages/StudyGroups/StudyGroups';
+import GroupDetail from './pages/StudyGroups/GroupDetail';
+import GroupConversations from './pages/GroupConversations/GroupConversations';
+import ConversationSession from './pages/GroupConversations/ConversationSession';
 import GoogleAnalytics from './components/GoogleAnalytics/GoogleAnalytics';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { onAuthChange } from './services/auth';
@@ -165,6 +169,10 @@ function App() {
             <Route path="lesson/:lessonId" element={<LessonViewer />} />
             <Route path="vocabulary" element={<VocabularyReview />} />
             <Route path="conversation-practice" element={<ConversationPractice />} />
+            <Route path="groups" element={<StudyGroups />} />
+            <Route path="groups/:groupId" element={<GroupDetail />} />
+            <Route path="groups/:groupId/conversations" element={<GroupConversations />} />
+            <Route path="groups/:groupId/conversations/:sessionId" element={<ConversationSession />} />
             <Route path="achievements" element={<Achievements />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="profile" element={<Profile />} />

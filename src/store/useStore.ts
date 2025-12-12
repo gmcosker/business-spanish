@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, Module, UserProgress, OnboardingData, VocabularyItem, Achievement, UserPreferences, DailyActivity } from '../types';
+import type { User, Module, UserProgress, OnboardingData, VocabularyItem, Achievement, UserPreferences, DailyActivity, StudyGroup, GroupMember, GroupStats, GroupActivity, Industry, GroupConversationSession, DialogueMessage } from '../types';
 import { checkNewAchievements } from '../utils/achievements';
 import { saveUserProgress, getUserProgress, trackDailyActivity as saveDailyActivityToFirestore } from '../services/firestore';
 import { analytics } from '../services/analytics';
+import * as studyGroupsService from '../services/studyGroups';
+import * as groupConversationsService from '../services/groupConversations';
 
 interface AppState {
   user: User | null;
@@ -17,6 +19,18 @@ interface AppState {
   isOnboarding: boolean;
   newAchievements: Achievement[];
   quickMode: boolean; // For testing flexibility
+  
+  // Study Groups
+  studyGroups: StudyGroup[];
+  currentGroup: StudyGroup | null;
+  groupMembers: GroupMember[];
+  groupActivities: GroupActivity[];
+  groupStats: GroupStats | null;
+  
+  // Group Conversations
+  groupConversationSessions: GroupConversationSession[];
+  currentConversationSession: GroupConversationSession | null;
+  conversationMessages: DialogueMessage[];
   
   // Actions
   setUser: (user: User) => void;
@@ -39,6 +53,23 @@ interface AppState {
   toggleQuickMode: () => void;
   resetApp: () => void;
   backfillCompletedModules: () => Promise<void>;
+  
+  // Study Groups Actions
+  loadUserStudyGroups: () => Promise<void>;
+  joinIndustryGroup: (industry: Industry) => Promise<void>;
+  leaveStudyGroup: (groupId: string) => Promise<void>;
+  loadGroupDetails: (groupId: string) => Promise<void>;
+  loadGroupActivities: (groupId: string) => Promise<void>;
+  createGroupActivity: (groupId: string, type: GroupActivity['type'], content: string, metadata?: any) => Promise<void>;
+  
+  // Group Conversations Actions
+  loadGroupConversationSessions: (groupId: string) => Promise<void>;
+  createConversationSession: (groupId: string, scenarioId: string, type: 'role-play' | 'group-conversation', scheduledStartTime?: string) => Promise<void>;
+  joinConversationSession: (sessionId: string) => Promise<void>;
+  sendConversationMessage: (sessionId: string, nodeId: string, text: string) => Promise<void>;
+  subscribeToConversation: (sessionId: string) => () => void;
+  setParticipantReady: (sessionId: string, isReady: boolean) => Promise<void>;
+  startConversationSession: (sessionId: string) => Promise<void>;
 }
 
 const initialOnboarding: OnboardingData = {
@@ -59,6 +90,18 @@ export const useStore = create<AppState>()(
       isOnboarding: true,
       newAchievements: [],
       quickMode: false,
+      
+      // Study Groups
+      studyGroups: [],
+      currentGroup: null,
+      groupMembers: [],
+      groupActivities: [],
+      groupStats: null,
+      
+      // Group Conversations
+      groupConversationSessions: [],
+      currentConversationSession: null,
+      conversationMessages: [],
 
       setUser: (user) => set({ user }),
       
@@ -180,6 +223,17 @@ export const useStore = create<AppState>()(
             });
             
             console.log('✅ Onboarding complete - progress and profile saved to Firestore');
+            
+            // Auto-join industry study group
+            if (onboardingData.industry) {
+              try {
+                const { joinIndustryGroup } = get();
+                await joinIndustryGroup(onboardingData.industry);
+              } catch (error) {
+                console.error('Failed to join study group:', error);
+                // Don't block onboarding if this fails
+              }
+            }
           } catch (error) {
             console.error('❌ Failed to save progress to Firestore:', error);
             // Don't throw - user can still continue, progress will sync later
@@ -245,9 +299,26 @@ export const useStore = create<AppState>()(
           const newAchievements = checkNewAchievements(updatedProgress);
           
           // Track achievement unlocks
-          newAchievements.forEach(achievement => {
+          for (const achievement of newAchievements) {
             analytics.achievementUnlocked(achievement.id, achievement.title);
-          });
+            
+            // Create group activity for achievement
+            const { user, studyGroups } = get();
+            if (user && studyGroups.length > 0) {
+              for (const group of studyGroups) {
+                try {
+                  await get().createGroupActivity(
+                    group.id,
+                    'achievement_earned',
+                    `${user.name} earned the ${achievement.title} badge`,
+                    { achievementId: achievement.id }
+                  );
+                } catch (error) {
+                  console.error('Error creating achievement group activity:', error);
+                }
+              }
+            }
+          }
           
           // Track lesson completion
           analytics.lessonComplete(lessonId, module.id, currentIndustry || 'unknown', lesson.duration);
@@ -259,6 +330,23 @@ export const useStore = create<AppState>()(
             },
             newAchievements,
           });
+          
+          // Create group activity if user is in groups
+          const { user, studyGroups } = get();
+          if (user && studyGroups.length > 0) {
+            for (const group of studyGroups) {
+              try {
+                await get().createGroupActivity(
+                  group.id,
+                  'lesson_completed',
+                  `${user.name} completed '${lesson.title}'`,
+                  { lessonId }
+                );
+              } catch (error) {
+                console.error('Error creating group activity:', error);
+              }
+            }
+          }
 
           // Track daily activity to Firestore
           if (firebaseUser) {
@@ -506,6 +594,239 @@ export const useStore = create<AppState>()(
         }
       },
       
+      // Study Groups Actions
+      loadUserStudyGroups: async () => {
+        const { firebaseUser } = get();
+        if (!firebaseUser) return;
+        
+        try {
+          const groups = await studyGroupsService.getUserStudyGroups(firebaseUser.uid);
+          set({ studyGroups: groups });
+        } catch (error) {
+          console.error('Error loading user study groups:', error);
+        }
+      },
+      
+      joinIndustryGroup: async (industry: Industry) => {
+        const { firebaseUser, user } = get();
+        if (!firebaseUser || !user) return;
+        
+        try {
+          const group = await studyGroupsService.getOrCreateIndustryGroup(industry, firebaseUser.uid);
+          await studyGroupsService.joinStudyGroup(
+            group.id,
+            firebaseUser.uid,
+            user.name,
+            user.email,
+            user.avatar
+          );
+          
+          // Reload user's groups
+          await get().loadUserStudyGroups();
+        } catch (error) {
+          console.error('Error joining industry group:', error);
+          throw error;
+        }
+      },
+      
+      leaveStudyGroup: async (groupId: string) => {
+        const { firebaseUser } = get();
+        if (!firebaseUser) return;
+        
+        try {
+          await studyGroupsService.leaveStudyGroup(groupId, firebaseUser.uid);
+          
+          // Remove from local state
+          set((state) => ({
+            studyGroups: state.studyGroups.filter(g => g.id !== groupId),
+            currentGroup: state.currentGroup?.id === groupId ? null : state.currentGroup,
+          }));
+        } catch (error) {
+          console.error('Error leaving study group:', error);
+          throw error;
+        }
+      },
+      
+      loadGroupDetails: async (groupId: string) => {
+        try {
+          const [group, members, stats] = await Promise.all([
+            studyGroupsService.getStudyGroup(groupId),
+            studyGroupsService.getGroupMembers(groupId),
+            studyGroupsService.getGroupStats(groupId),
+          ]);
+          
+          if (group) {
+            set({
+              currentGroup: group,
+              groupMembers: members,
+              groupStats: stats,
+            });
+          }
+        } catch (error) {
+          console.error('Error loading group details:', error);
+        }
+      },
+      
+      loadGroupActivities: async (groupId: string) => {
+        try {
+          const activities = await studyGroupsService.getGroupActivities(groupId, 20);
+          set({ groupActivities: activities });
+        } catch (error) {
+          console.error('Error loading group activities:', error);
+        }
+      },
+      
+      createGroupActivity: async (
+        groupId: string,
+        type: GroupActivity['type'],
+        content: string,
+        metadata?: any
+      ) => {
+        const { firebaseUser, user } = get();
+        if (!firebaseUser || !user) return;
+        
+        try {
+          await studyGroupsService.createGroupActivity(
+            groupId,
+            firebaseUser.uid,
+            user.name,
+            user.avatar,
+            type,
+            content,
+            metadata
+          );
+          
+          // Reload activities
+          await get().loadGroupActivities(groupId);
+        } catch (error) {
+          console.error('Error creating group activity:', error);
+        }
+      },
+      
+      // Group Conversations Actions
+      loadGroupConversationSessions: async (groupId: string) => {
+        try {
+          const sessions = await groupConversationsService.getGroupConversationSessions(groupId);
+          set({ groupConversationSessions: sessions });
+        } catch (error) {
+          console.error('Error loading conversation sessions:', error);
+        }
+      },
+      
+      createConversationSession: async (
+        groupId: string,
+        scenarioId: string,
+        type: 'role-play' | 'group-conversation',
+        scheduledStartTime?: string
+      ) => {
+        const { firebaseUser, user } = get();
+        if (!firebaseUser || !user) return;
+        
+        try {
+          const session = await groupConversationsService.createGroupConversationSession(
+            groupId,
+            scenarioId,
+            type,
+            firebaseUser.uid,
+            user.name,
+            scheduledStartTime
+          );
+          
+          // Reload sessions
+          await get().loadGroupConversationSessions(groupId);
+        } catch (error) {
+          console.error('Error creating conversation session:', error);
+          throw error;
+        }
+      },
+      
+      joinConversationSession: async (sessionId: string) => {
+        const { firebaseUser, user } = get();
+        if (!firebaseUser || !user) return;
+        
+        try {
+          await groupConversationsService.joinConversationSession(
+            sessionId,
+            firebaseUser.uid,
+            user.name,
+            user.avatar
+          );
+          
+          // Reload sessions to update participant count
+          const { currentGroup } = get();
+          if (currentGroup) {
+            await get().loadGroupConversationSessions(currentGroup.id);
+          }
+        } catch (error) {
+          console.error('Error joining conversation session:', error);
+          throw error;
+        }
+      },
+      
+      sendConversationMessage: async (sessionId: string, nodeId: string, text: string) => {
+        const { firebaseUser, user } = get();
+        if (!firebaseUser || !user) return;
+        
+        try {
+          await groupConversationsService.sendConversationMessage(
+            sessionId,
+            firebaseUser.uid,
+            user.name,
+            user.avatar,
+            nodeId,
+            text
+          );
+        } catch (error) {
+          console.error('Error sending message:', error);
+          throw error;
+        }
+      },
+      
+      subscribeToConversation: (sessionId: string) => {
+        // Subscribe to messages
+        const unsubscribeMessages = groupConversationsService.subscribeToConversationMessages(
+          sessionId,
+          (messages) => {
+            set({ conversationMessages: messages });
+          }
+        );
+        
+        // Subscribe to session updates
+        const unsubscribeSession = groupConversationsService.subscribeToSession(
+          sessionId,
+          (session) => {
+            set({ currentConversationSession: session });
+          }
+        );
+        
+        // Return cleanup function
+        return () => {
+          unsubscribeMessages();
+          unsubscribeSession();
+        };
+      },
+      
+      setParticipantReady: async (sessionId: string, isReady: boolean) => {
+        const { firebaseUser } = get();
+        if (!firebaseUser) return;
+        
+        try {
+          await groupConversationsService.setParticipantReady(sessionId, firebaseUser.uid, isReady);
+        } catch (error) {
+          console.error('Error setting participant ready:', error);
+          throw error;
+        }
+      },
+      
+      startConversationSession: async (sessionId: string) => {
+        try {
+          await groupConversationsService.startConversationSession(sessionId);
+        } catch (error) {
+          console.error('Error starting conversation session:', error);
+          throw error;
+        }
+      },
+      
       resetApp: () => 
         set({
           user: null,
@@ -519,6 +840,11 @@ export const useStore = create<AppState>()(
           isOnboarding: true,
           newAchievements: [],
           quickMode: false,
+          studyGroups: [],
+          currentGroup: null,
+          groupMembers: [],
+          groupActivities: [],
+          groupStats: null,
         }),
     }),
     {

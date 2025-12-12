@@ -4,6 +4,9 @@ import {
   signOut as firebaseSignOut,
   sendPasswordResetEmail,
   updateProfile,
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
   User as FirebaseUser,
   onAuthStateChanged,
   signInWithPopup,
@@ -187,6 +190,28 @@ export async function signInWithGoogle(): Promise<AuthUser> {
     }
   } catch (error: any) {
     throw new Error(error.message || 'Failed to sign in with Google');
+  }
+}
+
+/**
+ * Change user password
+ * Requires re-authentication for security
+ */
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  try {
+    const user = auth.currentUser;
+    if (!user || !user.email) {
+      throw new Error('No user is currently signed in');
+    }
+
+    // Re-authenticate user with current password
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    // Update password
+    await updatePassword(user, newPassword);
+  } catch (error: any) {
+    throw new Error(error.message || 'Failed to change password');
   }
 }
 

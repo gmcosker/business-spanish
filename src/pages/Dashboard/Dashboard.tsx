@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
-import { BookOpen, Target, TrendingUp, Clock, Award, ArrowRight, Brain, ClipboardList } from 'lucide-react';
+import { BookOpen, Target, TrendingUp, Clock, Award, ArrowRight, Brain, ClipboardList, Users, Activity } from 'lucide-react';
 import { getWordsToReview } from '../../utils/spacedRepetition';
 import type { VocabularyItem } from '../../types';
 import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
-  const { user, progress, modules } = useStore();
+  const { user, progress, modules, studyGroups, groupActivities, loadUserStudyGroups, loadGroupActivities } = useStore();
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -19,6 +19,20 @@ export default function Dashboard() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Load study groups and activities
+  useEffect(() => {
+    const loadGroups = async () => {
+      if (user) {
+        await loadUserStudyGroups();
+        // Load activities for first group if available
+        if (studyGroups.length > 0) {
+          await loadGroupActivities(studyGroups[0].id);
+        }
+      }
+    };
+    loadGroups();
+  }, [user, loadUserStudyGroups, loadGroupActivities]);
 
   // Create default user/progress if auth is bypassed (development mode)
   const defaultUser = {
@@ -280,6 +294,53 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
+
+          {/* Study Group Widget */}
+          {studyGroups.length > 0 && (
+            <div className="card p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary-600" />
+                  Study Group
+                </h3>
+                <button
+                  onClick={() => navigate('/groups')}
+                  className="text-sm text-primary-600 hover:text-primary-700"
+                >
+                  View All
+                </button>
+              </div>
+              <div className="space-y-3">
+                {studyGroups.slice(0, 1).map((group) => (
+                  <div key={group.id} className="border border-gray-200 rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-gray-900 text-sm">{group.name}</h4>
+                      <span className="text-xs text-gray-500">{group.memberCount} members</span>
+                    </div>
+                    <button
+                      onClick={() => navigate(`/groups/${group.id}`)}
+                      className="w-full btn-secondary text-sm py-2"
+                    >
+                      View Group
+                    </button>
+                  </div>
+                ))}
+                {groupActivities.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
+                      <Activity className="w-3 h-3" />
+                      Recent Activity
+                    </div>
+                    {groupActivities.slice(0, 2).map((activity) => (
+                      <div key={activity.id} className="text-xs text-gray-600 truncate">
+                        {activity.content}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Streak card */}
           <div className="card p-6 relative overflow-hidden bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-500 shadow-lg">

@@ -25,6 +25,90 @@ service cloud.firestore {
       }
     }
     
+    // Study Groups - public read, authenticated write
+    match /studyGroups/{groupId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        resource.data.createdBy == request.auth.uid ||
+        exists(/databases/$(database)/documents/studyGroups/$(groupId)/members/$(request.auth.uid))
+      );
+      allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+      
+      // Group members
+      match /members/{userId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.auth.uid == userId;
+        allow update: if isSignedIn() && (
+          request.auth.uid == userId ||
+          get(/databases/$(database)/documents/studyGroups/$(groupId)/members/$(request.auth.uid)).data.role in ['moderator', 'admin']
+        );
+        allow delete: if isSignedIn() && (
+          request.auth.uid == userId ||
+          get(/databases/$(database)/documents/studyGroups/$(groupId)/members/$(request.auth.uid)).data.role in ['moderator', 'admin']
+        );
+      }
+      
+      // Group stats - read only
+      match /stats/{statsId} {
+        allow read: if isSignedIn();
+        allow write: if false; // Only server-side updates
+      }
+      
+      // Group activities - read and create
+      match /activities/{activityId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn();
+        allow update, delete: if false; // Activities are immutable
+      }
+    }
+    
+    // Group Conversation Sessions
+    match /groupConversationSessions/{sessionId} {
+      // Helper function to check if user is a group member
+      function isGroupMember(groupId) {
+        return isSignedIn() && 
+          exists(/databases/$(database)/documents/studyGroups/$(groupId)/members/$(request.auth.uid));
+      }
+      
+      // Group members can read sessions
+      allow read: if isSignedIn() && isGroupMember(resource.data.groupId);
+      
+      // Group members can create sessions
+      allow create: if isSignedIn() && 
+        isGroupMember(request.resource.data.groupId) &&
+        request.resource.data.createdBy == request.auth.uid;
+      
+      // Participants can update
+      allow update: if isSignedIn() && (
+        request.auth.uid in resource.data.participants.map(p => p.userId) ||
+        resource.data.createdBy == request.auth.uid
+      );
+      
+      // Only creator can delete
+      allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+      
+      // Messages subcollection
+      match /messages/{messageId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && 
+          request.resource.data.userId == request.auth.uid;
+        allow update: if isSignedIn() && 
+          request.resource.data.userId == request.auth.uid; // For peer feedback
+        allow delete: if false; // Messages are immutable
+      }
+      
+      // Participants subcollection
+      match /participants/{userId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.auth.uid == userId;
+        allow update: if isSignedIn() && (
+          request.auth.uid == userId ||
+          get(/databases/$(database)/documents/groupConversationSessions/$(sessionId)).data.createdBy == request.auth.uid
+        );
+      }
+    }
+    
     // Deny all other access
     match /{document=**} {
       allow read, write: if false;

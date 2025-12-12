@@ -25,6 +25,7 @@ export interface User {
   avatar?: string;
   preferences?: UserPreferences;
   subscriptionTier?: SubscriptionTier;
+  studyGroupIds?: string[]; // Array of group IDs user belongs to
 }
 
 export interface Module {
@@ -144,4 +145,158 @@ export interface OnboardingData {
   industry?: Industry;
   goal?: string;
   targetDate?: string;
+}
+
+export interface StudyGroup {
+  id: string;
+  industry: Industry;
+  name: string; // e.g., "Tech Professionals Learning Spanish"
+  description: string;
+  memberCount: number;
+  createdAt: string;
+  createdBy: string;
+  isPublic: boolean;
+  rules?: string[];
+  bannerImage?: string;
+}
+
+export interface GroupMember {
+  id: string;
+  groupId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userAvatar?: string;
+  joinedAt: string;
+  role: 'member' | 'moderator' | 'admin';
+  isActive: boolean;
+  lastActiveAt: string;
+}
+
+export interface GroupStats {
+  groupId: string;
+  totalMembers: number;
+  activeMembers: number; // Active in last 7 days
+  totalLessonsCompleted: number;
+  totalVocabularyMastered: number;
+  averageStreak: number;
+  groupStreak: number; // Consecutive days with at least 1 member active
+  lastUpdated: string;
+}
+
+export interface GroupActivity {
+  id: string;
+  groupId: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  type: 'lesson_completed' | 'achievement_earned' | 'member_joined' | 'challenge_created';
+  content: string; // e.g., "Sarah completed 'Tech Meetings & Presentations'"
+  metadata?: {
+    lessonId?: string;
+    achievementId?: string;
+    challengeId?: string;
+  };
+  timestamp: string;
+}
+
+// Group Conversation Practice Types
+export interface GroupConversationSession {
+  id: string;
+  groupId: string;
+  scenarioId: string; // References existing ConversationScenario
+  type: 'role-play' | 'group-conversation';
+  status: 'scheduled' | 'active' | 'completed' | 'cancelled';
+  createdBy: string;
+  createdAt: string;
+  scheduledStartTime?: string;
+  startedAt?: string;
+  completedAt?: string;
+  
+  // Participants
+  participants: ConversationParticipant[];
+  maxParticipants: number; // 2 for role-play, 3-4 for group
+  
+  // Scenario configuration
+  scenarioConfig: {
+    scenarioId: string;
+    roles: RoleAssignment[];
+    turnOrder: string[]; // User IDs in order
+    currentTurnIndex: number;
+  };
+  
+  // Conversation state
+  conversationState: {
+    currentNodeIndex: number;
+    dialogueHistory: DialogueMessage[];
+    completedNodes: string[];
+  };
+}
+
+export interface ConversationParticipant {
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  role: string; // e.g., "Client", "Sales Rep", "Manager"
+  joinedAt: string;
+  isActive: boolean;
+  isReady: boolean;
+  turnOrder: number; // Position in turn sequence
+}
+
+export interface RoleAssignment {
+  roleId: string; // e.g., "client", "sales-rep"
+  roleName: string; // e.g., "Client", "Sales Representative"
+  userId: string; // Assigned user
+  dialogueNodeIds: string[]; // Which nodes this role speaks in
+}
+
+export interface DialogueMessage {
+  id: string;
+  sessionId: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  role: string;
+  nodeId: string; // Which dialogue node this corresponds to
+  messageType: 'ai-prompt' | 'user-response' | 'system';
+  text: string;
+  timestamp: string;
+  
+  // For user responses
+  feedback?: {
+    score: number;
+    grammarIssues?: string[];
+    vocabularySuggestions?: string[];
+    feedbackLevel: 'excellent' | 'good' | 'needs-improvement' | 'poor';
+  };
+  
+  // Peer feedback
+  peerFeedback?: PeerFeedback[];
+}
+
+export interface PeerFeedback {
+  fromUserId: string;
+  fromUserName: string;
+  feedbackType: 'grammar' | 'vocabulary' | 'pronunciation' | 'general';
+  comment: string;
+  rating?: number; // 1-5
+  timestamp: string;
+}
+
+export interface GroupDialogueNode {
+  id: string;
+  speakerRole: string; // Which role speaks
+  text?: string; // For AI/system prompts
+  expectedResponses?: string[];
+  followUpNodes?: string[];
+  feedbackHints?: string;
+  isSystemPrompt?: boolean;
+}
+
+export interface RoleDefinition {
+  roleId: string;
+  roleName: string;
+  description: string;
+  dialogueNodeIds: string[];
 }

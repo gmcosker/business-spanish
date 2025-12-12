@@ -7,6 +7,7 @@ import {
   Trophy,
   BarChart3,
   MessageCircle,
+  Users,
   X,
   Lock
 } from 'lucide-react';
@@ -38,6 +39,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { to: '/learning-path', icon: BookOpen, label: 'Learning Path', premium: false },
     { to: '/vocabulary', icon: Library, label: 'Vocabulary Review', premium: false },
     { to: '/conversation-practice', icon: MessageCircle, label: 'Conversation Practice', premium: true, lockIcon: !canAccessConversationPractice },
+    { to: '/groups', icon: Users, label: 'Study Groups', premium: false },
     { to: '/achievements', icon: Trophy, label: 'Achievements', premium: false },
     { to: '/analytics', icon: BarChart3, label: 'Analytics', premium: false },
     { to: '/profile', icon: User, label: 'Profile', premium: false },
